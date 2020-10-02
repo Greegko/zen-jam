@@ -1,0 +1,27 @@
+{
+  "name": "zen-jam",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "./node_modules/.bin/webpack-dev-server --config ./webpack.config.js --progress --colors --inline --content-base public/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Greegko/zen-jam.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Greegko/zen-jam/issues"
+  },
+  "homepage": "https://github.com/Greegko/zen-jam#readme",
+  "dependencies": {
+    "source-map": "0.7.3",
+    "ts-loader": "8.0.4",
+    "typescript": "4.0.3",
+    "webpack": "4.44.2",
+    "webpack-cli": "3.3.12",
+    "webpack-dev-server": "3.11.0"
+  }
+}
