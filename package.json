@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Greegko/zen-jam#readme",
   "dependencies": {
+    "pixi.js": "^5.0.0-rc",
     "source-map": "0.7.3",
     "ts-loader": "8.0.4",
     "typescript": "4.0.3",
