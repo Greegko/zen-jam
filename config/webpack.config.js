@@ -5,7 +5,7 @@ module.exports = {
 
   output: {
     filename: "bundle.js",
-    path: __dirname + "/public"
+    path: __dirname + "/../dist"
   },
 
   devtool: "source-map",
@@ -16,8 +16,8 @@ module.exports = {
 
   plugins: [
     new CopyWebpackPlugin({
-       patterns: [
-        { from: 'build/assets', to: 'assets' },
+      patterns: [
+        { from: 'public', to: './' },
       ],
     })
   ],
@@ -26,14 +26,6 @@ module.exports = {
     rules: [{
       test: /\.tsx?$/,
       use: ["ts-loader"]
-    },
-    
-    // {
-    //   test: /\.(png|svg|jpg|gif)$/,
-    //   use: [
-    //     'file-loader'
-    //   ]
-    // }, 
-  ]
+    }]
   }
 };
