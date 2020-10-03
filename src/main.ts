@@ -84,7 +84,7 @@ function loop(delta) {
             person.collade();
         }
 
-        person.update(delta);
+        person.update(delta, i);
     }
 
 }
