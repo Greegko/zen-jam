@@ -1,5 +1,4 @@
-import { Application, Loader, ParticleContainer, TilingSprite } from 'pixi.js';
-// import style from './style.css'
+import { Application, Loader, ParticleContainer, Sprite, TilingSprite } from 'pixi.js';
 import Person from './person'
 
 import { Globals, RESOURCES } from './globals';
@@ -29,12 +28,14 @@ function setup() {
 
     Globals.player = player;
 
-    let person = new Person();
-    Globals.crowd.push(person);
-    person.init(100, 100);
+    for (let i = 0; i < 50; i++) {
+        let person = new Person();
+        Globals.crowd.push(person);
+        person.init(100, 100);
+        container.addChild(person.sprite);
+    }
 
     container.addChild(player.sprite);
-    container.addChild(person.sprite);
 
     Globals.app.stage.addChild(backgroundContainer);
     Globals.app.stage.addChild(container);
@@ -47,12 +48,19 @@ function loop(delta) {
     Globals.player.update();
 
     updatePlayerCamera();
+    updatePersonsIndex();
 
     for (let i = 0; i < Globals.crowd.length; i++) {
         const person = Globals.crowd[i];
         person.update(delta);
     }
 
+}
+
+function updatePersonsIndex() {
+    const sprites: Sprite[] = [Globals.player.sprite, ...Globals.crowd.map(x => x.sprite)];
+    sprites.sort((x, y) => x.y < y.y ? -1 : 1);
+    sprites.forEach((sprite, index) => container.setChildIndex(sprite, index));
 }
 
 function updatePlayerCamera() {
