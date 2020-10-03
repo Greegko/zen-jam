@@ -26,15 +26,15 @@ class Person {
     this.maxVelocityWalk = SPEED;
     this.maxVelocityRun = 1;
 
-    this.accelleration = 0.1;
+    this.accelleration = 0.5;
     
     this.moving = true;
     this.running = false;
-    this.movementDirection = [1, 0];
+    this.movementDirection = [-1, 0];
     // this.movementTarget = [0, 0];
     this.currentVelocity = 0;
 
-    this.behaviourTimer = 60 * 2;
+    this.behaviourTimer = 60 * 0.5;
 
   }
 
@@ -49,6 +49,7 @@ class Person {
       if(this.currentVelocity < maxVelocity){
         this.currentVelocity += this.accelleration;
       }
+      else this.currentVelocity = maxVelocity;
     }
     else{
       if(this.currentVelocity > 0) this.currentVelocity -= this.accelleration;
@@ -65,7 +66,12 @@ class Person {
     this.behaviourTimer -= delta;
     if(this.behaviourTimer <= 0){
       console.log("click!");
-      this.behaviourTimer = 60 * 2;
+      this.behaviourTimer = 60 * 0.5;
+      if(this.moving) this.moving = false;
+      else{
+        this.moving = true;
+        this.movementDirection = [Math.random()*2-1, Math.random()*2-1];
+      }
       
     }
     //console.log(this.behaviourTimer);
