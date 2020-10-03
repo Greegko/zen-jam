@@ -23,7 +23,7 @@ class Person {
 
     Globals.app.stage.addChild(this.sprite);
 
-    this.maxVelocityWalk = 1;
+    this.maxVelocityWalk = SPEED;
     this.maxVelocityRun = 1;
 
     this.accelleration = 0.1;
@@ -34,7 +34,7 @@ class Person {
     // this.movementTarget = [0, 0];
     this.currentVelocity = 0;
 
-    this.behaviourTimer = 0
+    this.behaviourTimer = 60 * 2;
 
   }
 
@@ -62,7 +62,12 @@ class Person {
 
   tickBehaviour(delta){
     
-    this.behaviourTimer += delta;
+    this.behaviourTimer -= delta;
+    if(this.behaviourTimer <= 0){
+      console.log("click!");
+      this.behaviourTimer = 60 * 2;
+      
+    }
     //console.log(this.behaviourTimer);
     
   }

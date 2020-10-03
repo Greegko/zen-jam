@@ -64,7 +64,7 @@ function loop(delta) {
 
     for (let i = 0; i < Globals.crowd.length; i++) {
         const person = Globals.crowd[i];
-        person.update();
+        person.update(delta);
     }
 }
 

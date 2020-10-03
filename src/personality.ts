@@ -1,4 +1,4 @@
-import { Pixi, Globals } from './main'
+// import { Pixi, Globals } from './main'
 
 class Personality {
 
