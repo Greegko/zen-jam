@@ -84,7 +84,7 @@ export const PERSONALITIES: Record<string, Personality> = {
           longWait: {
             default: true,
             type: "wait",
-            options: { duration: 60 * 10 },
+            options: { duration: 60 * 3 },
             nextActions: ["longWait", "shortWalk"]
           },
           shortWalk: {

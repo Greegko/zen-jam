@@ -55,9 +55,9 @@ function setup() {
 
     Globals.player = player;
 
-    for (let i = 0; i < 80; i++) {
+    for (let i = 0; i < 200; i++) {
         let person = new Person();
-        person.init(getRandomCharacterSprite(), Math.random() * (i - 25) * 50, Math.random() * (i - 25) * 50);
+        person.init(getRandomCharacterSprite(), Math.random() * (i - 25) * 10, Math.random() * (i - 25) * 10);
         Globals.crowd.push(person);
         // console.log(person.sprite);
         container.addChild(person.sprite);
