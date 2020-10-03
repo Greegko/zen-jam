@@ -1,7 +1,7 @@
 import { Sprite } from 'pixi.js';
 import { Action, Behaviour, PERSONALITIES, Personality } from './personality';
 import Tools from "./tools";
-import { WALKING_SPEED, RUNNING_SPEED, RESOURCES, Globals } from './globals';
+import { WALKING_SPEED, RUNNING_SPEED, Globals } from './globals';
 
 interface PersonAction {
   setup: any;
@@ -25,10 +25,8 @@ class Person {
   private actions: Record<string, PersonAction>;
   private exitActionTimer: number;
 
-  init(x: number, y: number) {
-    this.sprite = new Sprite(
-      RESOURCES["t_person"].texture
-    );
+  init(sprite: Sprite, x: number, y: number) {
+    this.sprite = sprite;
 
     this.sprite.x = x;
     this.sprite.y = y;

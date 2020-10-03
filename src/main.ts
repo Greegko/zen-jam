@@ -1,4 +1,4 @@
-import { Application, Loader, ParticleContainer, Sprite, TilingSprite } from 'pixi.js';
+import { AnimatedSprite, Application, Container, Loader, ParticleContainer, Sprite, Texture, TilingSprite } from 'pixi.js';
 import Person from './person'
 
 import { Globals, RESOURCES } from './globals';
@@ -7,32 +7,58 @@ import { hitTestRectangle } from './utils';
 
 Globals.app = new Application({
     width: window.innerWidth,
-    height: window.innerHeight,
-    // transparent: true 
+    height: window.innerHeight
 });
-// document.body.className = style["body"];
+
 document.body.appendChild(Globals.app.view);
 
+const rootPeoplePath = './assets/sprites/people';
+
+const createAnimatedSprite = (name: string) => {
+    const textures = Array(3).fill(null)
+        .map((x, i) => rootPeoplePath + "/" + name + "_0" + (i + 1) + ".png")
+        .map(x => Texture.from(x));
+
+    const animatedSprite = new AnimatedSprite(textures);
+    animatedSprite.animationSpeed = 3 / 60;
+    animatedSprite.play();
+
+    return animatedSprite;
+}
+
+const getRandomCharacterSprite = () => {
+    const id = ['EmptyMan', 'ManlyMan', 'ShoppingJanine'][Math.floor(Math.random() * 3)];
+    return createAnimatedSprite(id);
+}
+
+const ASSETS = {
+    'EmptyMan': ['EmptyMan_01.png', 'EmptyMan_02.png', 'EmptyMan_03.png'],
+    'ManlyMan': ['ManlyMan_01.png', 'ManlyMan_02.png', 'ManlyMan_03.png'],
+    'ShoppingJanine': ['ShoppingJanine_01.png', 'ShoppingJanine_02.png', 'ShoppingJanine_03.png']
+}
+
+const allAssetsUrls = Object.values(ASSETS).reduce((acc, curr) => [...acc, ...curr], []);
+
 Loader.shared.add([
-    { name: "t_person", url: "./assets/sprites/people/temp_person.png" },
+    ...allAssetsUrls,
     { name: "t_ground", url: "./assets/sprites/world/dirt.png" }
 ]).load(setup);
 
-const container = new ParticleContainer();
+const container = new Container();
 const backgroundContainer = new ParticleContainer();
-
 function setup() {
     generateBackgroundTiles().forEach((tile) => backgroundContainer.addChild(tile));
 
     const player = new Player();
-    player.init(0, 0);
+    player.init(getRandomCharacterSprite(), 0, 0);
 
     Globals.player = player;
 
     for (let i = 0; i < 50; i++) {
         let person = new Person();
+        person.init(getRandomCharacterSprite(), Math.random() * (i - 25) * 150, Math.random() * (i - 25) * 150);
         Globals.crowd.push(person);
-        person.init(Math.random() * (i - 25) * 150, Math.random() * (i - 25) * 150);
+        console.log(person.sprite);
         container.addChild(person.sprite);
     }
 

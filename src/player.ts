@@ -1,5 +1,5 @@
 import { Sprite } from "pixi.js";
-import { RESOURCES, WALKING_SPEED } from "./globals";
+import { WALKING_SPEED } from "./globals";
 
 export class Player {
   public sprite: Sprite;
@@ -7,10 +7,8 @@ export class Player {
   private xDirection: number = 0;
   private yDirection: number = 0;
 
-  init(x: number, y: number) {
-    this.sprite = new Sprite(
-      RESOURCES["t_person"].texture
-    );
+  init(sprite: Sprite, x: number, y: number) {
+    this.sprite = sprite;
 
     this.sprite.x = x;
     this.sprite.y = y;
@@ -20,8 +18,6 @@ export class Player {
   }
 
   update() {
-    if (!this.sprite) return;
-
     this.sprite.x += this.xDirection;
     this.sprite.y += this.yDirection;
   }
