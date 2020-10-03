@@ -18,6 +18,8 @@ Loader.shared.add([
     { name: "t_ground", url: "./assets/sprites/world/dirt.png" }
 ]).load(setup);
 
+const container = new ParticleContainer();
+
 function setup() {
 
     const tilingSprite = new TilingSprite(
@@ -41,7 +43,6 @@ function setup() {
         Globals.app.renderer.height / 2
     );
 
-    const container = new ParticleContainer();
     container.addChild(player.sprite);
     container.addChild(person.sprite);
 
@@ -54,8 +55,18 @@ function setup() {
 function loop(delta) {
     Globals.player.update();
 
+    updatePlayerCamera();
+
     for (let i = 0; i < Globals.crowd.length; i++) {
         const person = Globals.crowd[i];
         person.update(delta);
     }
+
+}
+
+function updatePlayerCamera() {
+    const playerSprite = Globals.player.sprite;
+    const canvas = document.getElementsByTagName('canvas')[0].getBoundingClientRect();
+    container.x = canvas.width / 2 - playerSprite.x - playerSprite.width / 2;
+    container.y = canvas.height / 2 - playerSprite.y - playerSprite.height / 2;
 }
