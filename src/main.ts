@@ -27,14 +27,18 @@ const createAnimatedSprite = (name: string) => {
 }
 
 const getRandomCharacterSprite = () => {
-    const id = ['EmptyMan', 'ManlyMan', 'ShoppingJanine'][Math.floor(Math.random() * 3)];
+    const characters = ['EmptySteave', 'ManlyMan', 'ShoppingJanine', 'SkatingSma', 'FranticFrancine'];
+    const id = characters[Math.floor(Math.random() * 3)];
     return createAnimatedSprite(id);
 }
 
 const ASSETS = {
-    'EmptyMan': ['EmptyMan_01.png', 'EmptyMan_02.png', 'EmptyMan_03.png'],
-    'ManlyMan': ['ManlyMan_01.png', 'ManlyMan_02.png', 'ManlyMan_03.png'],
-    'ShoppingJanine': ['ShoppingJanine_01.png', 'ShoppingJanine_02.png', 'ShoppingJanine_03.png']
+    'AngstyHank': ['AngstyHank_B.png', 'AngstyHank_F.png', 'AngstyHank_L.png', 'AngstyHank_R.png'],
+    'EmptySteve': ['EmptySteve_01.png', 'EmptySteve_02.png', 'EmptySteve_03.png'],
+    'ManlyMan': ['ManlyMan_01.png', 'ManlyMan_02.png', 'ManlyMan_03.png', 'ManlyMan_smiley.png'],
+    'ShoppingJanine': ['ShoppingJanine_01.png', 'ShoppingJanine_02.png', 'ShoppingJanine_03.png'],
+    'SkatingSma': ['SkatingSma_01.png', 'SkatingSma_02.png', 'SkatingSma_03.png'],
+    'FranticFrancine': ['FranticFrancine_01.png', 'FranticFrancine_02.png', 'FranticFrancine_03.png'],
 }
 
 const allAssetsUrls = Object.values(ASSETS).reduce((acc, curr) => [...acc, ...curr], []);
