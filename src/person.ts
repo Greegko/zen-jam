@@ -14,10 +14,13 @@ class Person {
   private maxVelocityWalk: number;
   private maxVelocityRun: number;
   private accelleration: number;
+  private movemetPointTargetSensibility: number;
+
   private moving: boolean;
   private running: boolean;
   private movementDirection: number[];
   private movemetPointTarget: number[];
+  private targetPerson: any;
   private personality: string;
   private currentBehaviour: Behaviour;
   private currentAction: Action;
@@ -40,19 +43,20 @@ class Person {
     this.maxVelocityRun = RUNNING_SPEED;
 
     this.accelleration = 0.5;
+    this.movemetPointTargetSensibility = 20;
 
     this.moving = false;
     this.running = false;
     this.movementDirection = [-1, 0];
-    // this.movementTarget = [0, 0];
     this.currentVelocity = 0;
-
-    this.personality = "friend";
+    
+    this.personality = "lazy";
     this.currentBehaviour = this.getDefaultBehaviour(PERSONALITIES[this.personality]);
     this.currentAction = this.getDefaultAction(this.currentBehaviour);
-
+    
     this.exitActionTimer = 0;
     this.movemetPointTarget = [0, 0];
+    this.targetPerson = null;
 
     this.actions = {
       wait: {
@@ -93,18 +97,15 @@ class Person {
         },
         update: () => {
 
-          let arrived = Tools.isPointInRect(
+          let arrived = Tools.isPointAtTarget(
             this.sprite.x,
             this.sprite.y,
-            this.movemetPointTarget[0] - 5,
-            this.movemetPointTarget[1] - 5,
-            this.movemetPointTarget[0] + 5,
-            this.movemetPointTarget[1] + 5,
+            this.movemetPointTarget[0],
+            this.movemetPointTarget[1],
+            this.movemetPointTargetSensibility,
           );
           if (arrived) {
             this.moving = false;
-            // console.log("movement done");
-
             this.changeAction();
           }
         }
@@ -120,6 +121,42 @@ class Person {
           this.movementDirection = [x, y];
         }
       },
+      stepAwayFromTarget:{
+        setup: (args) => {
+          this.running = args.running;
+          this.moving = true;
+
+          let dir = [
+            this.sprite.x - this.targetPerson.sprite.x,
+            this.sprite.y - this.targetPerson.sprite.y,
+          ];
+          let dir_length = Math.sqrt(Math.pow(dir[0], 2) + Math.pow(dir[1], 2));
+
+          dir = [dir[0]/dir_length, dir[1]/dir_length]; 
+          
+          this.movementDirection = dir.slice();
+          
+          dir = [dir[0]*args.distance, dir[1]*args.distance];
+
+          this.movemetPointTarget = [this.sprite.x + dir[0], this.sprite.y + dir[1]];
+
+        },
+        update: ()=> {
+          // console.log("going", this.movemetPointTarget);
+          
+          let arrived = Tools.isPointAtTarget(
+            this.sprite.x,
+            this.sprite.y,
+            this.movemetPointTarget[0],
+            this.movemetPointTarget[1],
+            this.movemetPointTargetSensibility,
+          );
+          if (arrived) {
+            this.moving = false;
+            this.changeAction();
+          }
+        },
+      }
 
     };
     this.eventChecks = {
@@ -131,6 +168,7 @@ class Person {
         let dist = Tools.distanceBetweenTwoPoints(posA, posB);
         if(dist < args.distance){
           console.log("TOUCHED!!!");
+          if(args.setTriggerAsTarget) this.targetPerson = target;
           return true;
         }
         else return false;
@@ -196,9 +234,17 @@ class Person {
   }
 
   private giveNextAction(action) {
-    let newAction = action.nextActions[Math.floor(Math.random() * action.nextActions.length)];
+    
 
-    return this.currentBehaviour.actions[newAction];
+    if(action.nextActions.length > 0){
+      let newAction = action.nextActions[Math.floor(Math.random() * action.nextActions.length)];
+      return this.currentBehaviour.actions[newAction];
+    }
+    else{
+      this.currentBehaviour = this.getDefaultBehaviour(PERSONALITIES[this.personality]);
+      return this.getDefaultAction(this.currentBehaviour);
+    }
+
   }
 
   private getDefaultBehaviour(personality: Personality) {

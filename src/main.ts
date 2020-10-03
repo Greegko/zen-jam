@@ -55,13 +55,19 @@ function setup() {
 
     Globals.player = player;
 
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 80; i++) {
         let person = new Person();
-        person.init(getRandomCharacterSprite(), Math.random() * (i - 25) * 150, Math.random() * (i - 25) * 150);
+        person.init(getRandomCharacterSprite(), Math.random() * (i - 25) * 50, Math.random() * (i - 25) * 50);
         Globals.crowd.push(person);
-        console.log(person.sprite);
+        // console.log(person.sprite);
         container.addChild(person.sprite);
     }
+
+    // let person = new Person();
+    // person.init(getRandomCharacterSprite(), 300, 300);
+    // Globals.crowd.push(person);
+    // // console.log(person.sprite);
+    // container.addChild(person.sprite);
 
     container.addChild(player.sprite);
 

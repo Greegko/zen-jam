@@ -75,6 +75,48 @@ export const PERSONALITIES: Record<string, Personality> = {
   //     // }
   //   ]
   // },
+  lazy: {
+    behaviours: {
+      idle: {
+        default: true,
+        possibleEvents: ["moveAwayWhenPlayerIsClose"],
+        actions: {
+          longWait: {
+            default: true,
+            type: "wait",
+            options: { duration: 60 * 10 },
+            nextActions: ["longWait", "shortWalk"]
+          },
+          shortWalk: {
+            type: "walkTo",
+            options: { random: true, radius: 50 },
+            nextActions: ["longWait", "longWait", "shortWalk"]
+          }
+        }
+      },
+      moveAwayFromPlayer: {
+        possibleEvents: [],
+        actions: {
+          moveTowardsTarget: {
+            default: true,
+            type: "stepAwayFromTarget",
+            options: {running: false, distance: 100},
+            nextActions: []
+          }
+        }
+      },
+    },
+    events: {
+      moveAwayWhenPlayerIsClose :
+        {
+          checkFunction: "hasApproached",
+          checkFunctionOptions: {distance: 100, setTriggerAsTarget: true },
+          callbackFunction: "changeBehaviour",
+          callbackFunctionOptions: { behaviour: "moveAwayFromPlayer" },
+          applyOnlyOnPlayer: true
+        }
+      },
+    },
   friend: {
     behaviours: {
       idle: {
@@ -110,7 +152,7 @@ export const PERSONALITIES: Record<string, Personality> = {
       followPlayerWhenClose :
         {
           checkFunction: "hasApproached",
-          checkFunctionOptions: { validTriggers: ["player"], distance: 40, setTriggerAsTarget: true },
+          checkFunctionOptions: { distance: 40, setTriggerAsTarget: true },
           callbackFunction: "changeBehaviour",
           callbackFunctionOptions: { behaviour: "followPlayer" },
           applyOnlyOnPlayer: true
