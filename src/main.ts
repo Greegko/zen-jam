@@ -27,26 +27,23 @@ const createAnimatedSprite = (name: string) => {
 }
 
 const getRandomCharacterSprite = () => {
-    const characters = ['EmptySteave', 'ManlyMan', 'ShoppingJanine', 'SkatingSma', 'FranticFrancine'];
-    const id = characters[Math.floor(Math.random() * 3)];
+    const characters = ['EmptySteve', 'ManlyMan', 'ShoppingJanine', 'SkatingSam', 'FranticFrancine'];
+    const id = characters[Math.floor(Math.random() * 5)];
     return createAnimatedSprite(id);
 }
 
 const ASSETS = {
     'AngstyHank': ['AngstyHank_B.png', 'AngstyHank_F.png', 'AngstyHank_L.png', 'AngstyHank_R.png'],
     'EmptySteve': ['EmptySteve_01.png', 'EmptySteve_02.png', 'EmptySteve_03.png'],
-    'ManlyMan': ['ManlyMan_01.png', 'ManlyMan_02.png', 'ManlyMan_03.png', 'ManlyMan_smiley.png'],
+    'ManlyMan': ['ManlyMan_01.png', 'ManlyMan_02.png', 'ManlyMan_03.png', 'ManlyMan_smile.png'],
     'ShoppingJanine': ['ShoppingJanine_01.png', 'ShoppingJanine_02.png', 'ShoppingJanine_03.png'],
-    'SkatingSma': ['SkatingSma_01.png', 'SkatingSma_02.png', 'SkatingSma_03.png'],
+    'SkatingSam': ['SkatingSam_01.png', 'SkatingSam_02.png', 'SkatingSam_03.png'],
     'FranticFrancine': ['FranticFrancine_01.png', 'FranticFrancine_02.png', 'FranticFrancine_03.png'],
 }
 
-const allAssetsUrls = Object.values(ASSETS).reduce((acc, curr) => [...acc, ...curr], []);
+const allAssetsUrls = Object.values(ASSETS).reduce((acc, curr) => [...acc, ...curr], []).map(x => rootPeoplePath + '/' + x);
 
-Loader.shared.add([
-    ...allAssetsUrls,
-    { name: "t_ground", url: "./assets/sprites/world/dirt.png" }
-]).load(setup);
+Loader.shared.add(allAssetsUrls).load(setup);
 
 const container = new Container();
 function setup() {
