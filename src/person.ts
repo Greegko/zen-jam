@@ -1,7 +1,7 @@
 import { Sprite } from 'pixi.js';
-import { WALKING_SPEED, RUNNING_SPEED, RESOURCES } from './globals';
 import Personality from './personality';
 import Tools from "./tools";
+import { WALKING_SPEED, RUNNING_SPEED, RESOURCES, Globals } from './globals';
 
 class Person {
   public sprite: Sprite;
@@ -14,7 +14,6 @@ class Person {
   private movemetPointTarget: number[];
   // private movementTarget: number[];
   private currentVelocity: number;
-  private behaviourTimer: number;
   public personality: Personality;
   private currentAction: any;
   private actions: Object;
@@ -39,100 +38,112 @@ class Person {
     // this.movementTarget = [0, 0];
     this.currentVelocity = 0;
 
-    this.personality = new Personality({type: "lazy"});
+    this.personality = new Personality({ type: "friend" });
     this.currentAction = this.personality.setup();
-    
 
     this.exitActionTimer = 0;
     this.movemetPointTarget = [0, 0];
-    this.behaviourTimer = 60 * 0.5;
-    
+
     this.actions = {
-      wait : {
+      wait: {
         setup: (args) => {
-          this.exitActionTimer = args.duration; 
-                   
+          this.exitActionTimer = args.duration;
+
         },
         update: () => {
           this.exitActionTimer--;
-          if(this.exitActionTimer <= 0) {
-            console.log("wait is over");
-            
+          if (this.exitActionTimer <= 0) {
+            // console.log("wait is over");
+
             this.exitAction();
           }
         }
       },
-      walkTo : {
+      walkTo: {
         setup: (args) => {
-          if(args.random){
+          if (args.random) {
             let randomAngle = Math.random() * 2 * Math.PI;
             let randomVector = [Math.cos(randomAngle), Math.sin(randomAngle)];
-            
+
             this.movementDirection = randomVector.slice() //slice is used as a copy method
-            
+
             //the distance to which they move is fixed
             randomVector[0] *= args.radius;
             randomVector[1] *= args.radius;
 
             this.movemetPointTarget = [this.sprite.x + randomVector[0], this.sprite.y + randomVector[1]];
-            
+
             this.moving = true;
             this.running = false;
 
-            console.log("My Pos ", this.sprite.x +", "+ this.sprite.y);
-            console.log("Moving To", this.movemetPointTarget);
+            // console.log("My Pos ", this.sprite.x + ", " + this.sprite.y);
+            // console.log("Moving To", this.movemetPointTarget);
 
-          }                   
+          }
         },
         update: () => {
 
           let arrived = Tools.isPointInRect(
             this.sprite.x,
             this.sprite.y,
-            this.movemetPointTarget[0]-5,
-            this.movemetPointTarget[1]-5,
-            this.movemetPointTarget[0]+5,
-            this.movemetPointTarget[1]+5,
-            );
-          if(arrived){
+            this.movemetPointTarget[0] - 5,
+            this.movemetPointTarget[1] - 5,
+            this.movemetPointTarget[0] + 5,
+            this.movemetPointTarget[1] + 5,
+          );
+          if (arrived) {
             this.moving = false;
-            console.log("movement done");
-            
+            // console.log("movement done");
+
             this.exitAction();
           }
+        }
+      },
+      followPlayer: {
+        setup: (args) => { },
+        update: () => {
+          this.moving = true;
+          const xLength = Globals.player.sprite.x - this.sprite.x;
+          const yLength = Globals.player.sprite.y - this.sprite.y;
+          const x = xLength - xLength * .98;
+          const y = yLength - yLength * .98;
+          this.movementDirection = [x, y];
         }
       },
 
     };
 
-    
-    //setUp the first action
     this.actions[this.currentAction.type].setup(this.currentAction.options);
-
-
   }
 
-  
+  checkForEvents() {
+    this.personality
+  }
 
   update(delta) {
+    this.checkForEvents();
     this.applyMovement();
     this.actions[this.currentAction.type].update();
     //this.tickBehaviour(delta)
   }
-  
-  exitAction(){
-    console.log("Action Finished ---");
+
+  exitAction() {
+    // console.log("Action Finished ---");
     this.changeAction();
-    
+
   }
 
-  changeAction(){
+  collade() {
+
+  }
+
+  private changeAction() {
     this.currentAction = this.personality.giveNextAction(this.currentAction);
     //setUp the new action
     this.actions[this.currentAction.type].setup(this.currentAction.options);
   }
 
-  applyMovement() {
+  private applyMovement() {
     if (this.moving) {
       let maxVelocity = this.running ? this.maxVelocityRun : this.maxVelocityWalk;
       if (this.currentVelocity < maxVelocity) {
@@ -148,21 +159,6 @@ class Person {
     //apply the movement direction o the two axes
     this.sprite.x += this.movementDirection[0] * this.currentVelocity;
     this.sprite.y += this.movementDirection[1] * this.currentVelocity;
-  }
-
-  tickBehaviour(delta) {
-
-    this.behaviourTimer -= delta;
-    if (this.behaviourTimer <= 0) {
-      this.behaviourTimer = 60 * 0.5 + Math.random() * 2 * 60;
-      if (this.moving) this.moving = false;
-      else {
-        this.moving = true;
-        this.movementDirection = [Math.random() * 2 - 1, Math.random() * 2 - 1];
-      }
-
-    }
-
   }
 
 }

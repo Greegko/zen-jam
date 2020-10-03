@@ -3,6 +3,7 @@ import Person from './person'
 
 import { Globals, RESOURCES } from './globals';
 import { Player } from './player';
+import { hitTestRectangle } from './utils';
 
 Globals.app = new Application({
     width: window.innerWidth,
@@ -24,14 +25,14 @@ function setup() {
     generateBackgroundTiles().forEach((tile) => backgroundContainer.addChild(tile));
 
     const player = new Player();
-    player.init(100, 100);
+    player.init(0, 0);
 
     Globals.player = player;
 
     for (let i = 0; i < 50; i++) {
         let person = new Person();
         Globals.crowd.push(person);
-        person.init(100, 100);
+        person.init(Math.random() * (i - 25) * 150, Math.random() * (i - 25) * 150);
         container.addChild(person.sprite);
     }
 
@@ -52,6 +53,10 @@ function loop(delta) {
 
     for (let i = 0; i < Globals.crowd.length; i++) {
         const person = Globals.crowd[i];
+        if (hitTestRectangle(person.sprite, Globals.player.sprite)) {
+            person.collade();
+        }
+
         person.update(delta);
     }
 
