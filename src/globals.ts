@@ -1,4 +1,4 @@
-import { Application, Loader } from "pixi.js";
+import { Application } from "pixi.js";
 import Person from "./person";
 import { Player } from './player';
 
@@ -10,7 +10,6 @@ interface IGlobals {
 
 export const WALKING_SPEED = 5;
 export const RUNNING_SPEED = 10;
-export const RESOURCES = Loader.shared.resources;
 
 export const Globals: IGlobals = {
   app: null,

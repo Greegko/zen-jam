@@ -1,8 +1,9 @@
-import { AnimatedSprite, Application, Container, Loader, Sprite, Texture } from 'pixi.js';
+import { Application, Container, Loader, Sprite } from 'pixi.js';
 import Person from './person'
 
 import { Globals } from './globals';
 import { Player } from './player';
+import { CHARACTER_ASSETS_IDS, getCharacterId, getRandomCharacterSprite } from './assets';
 
 Globals.app = new Application({
     width: window.innerWidth,
@@ -12,43 +13,17 @@ Globals.app = new Application({
 
 document.body.appendChild(Globals.app.view);
 
-const rootPeoplePath = './assets/sprites/people';
-
-const createAnimatedSprite = (name: string) => {
-    const textures = Array(3).fill(null)
-        .map((x, i) => rootPeoplePath + "/" + name + "_0" + (i + 1) + ".png")
-        .map(x => Texture.from(x));
-
-    const animatedSprite = new AnimatedSprite(textures);
-    animatedSprite.animationSpeed = 10 / 60;
-    animatedSprite.play();
-
-    return animatedSprite;
-}
-
-const getRandomCharacterSprite = () => {
-    const characters = ['EmptySteve', 'ManlyMan', 'ShoppingJanine', 'SkatingSam', 'FranticFrancine'];
-    const id = characters[Math.floor(Math.random() * 5)];
-    return createAnimatedSprite(id);
-}
-
-const ASSETS = {
-    'AngstyHank': ['AngstyHank_B.png', 'AngstyHank_F.png', 'AngstyHank_L.png', 'AngstyHank_R.png'],
-    'EmptySteve': ['EmptySteve_01.png', 'EmptySteve_02.png', 'EmptySteve_03.png'],
-    'ManlyMan': ['ManlyMan_01.png', 'ManlyMan_02.png', 'ManlyMan_03.png', 'ManlyMan_smile.png'],
-    'ShoppingJanine': ['ShoppingJanine_01.png', 'ShoppingJanine_02.png', 'ShoppingJanine_03.png'],
-    'SkatingSam': ['SkatingSam_01.png', 'SkatingSam_02.png', 'SkatingSam_03.png'],
-    'FranticFrancine': ['FranticFrancine_01.png', 'FranticFrancine_02.png', 'FranticFrancine_03.png'],
-}
-
-const allAssetsUrls = Object.values(ASSETS).reduce((acc, curr) => [...acc, ...curr], []).map(x => rootPeoplePath + '/' + x);
+const allAssetsUrls = Object.entries(CHARACTER_ASSETS_IDS).reduce(
+    (acc, [characterKey, ids]) => [...acc, ...ids.map(id => getCharacterId(characterKey, id))],
+    []
+);
 
 Loader.shared.add(allAssetsUrls).load(setup);
 
 const container = new Container();
 function setup() {
     const player = new Player();
-    player.init(getRandomCharacterSprite(), 0, 0);
+    player.init(0, 0);
 
     Globals.player = player;
 

@@ -1,4 +1,5 @@
 import { Sprite } from "pixi.js";
+import { getPlayerSprite } from "./assets";
 import { WALKING_SPEED } from "./globals";
 
 export class Player {
@@ -7,9 +8,8 @@ export class Player {
   private xDirection: number = 0;
   private yDirection: number = 0;
 
-  init(sprite: Sprite, x: number, y: number) {
-    this.sprite = sprite;
-
+  init(x: number, y: number) {
+    this.sprite = new Sprite(getPlayerSprite().B.texture);
     this.sprite.x = x;
     this.sprite.y = y;
 
