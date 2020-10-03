@@ -26,8 +26,8 @@ document.body.appendChild(Globals.app.view);
 
 Pixi.Loader
     .add([
-        { name: "t_person", url: "./assets/temp_person.png" },
-        { name: "t_ground", url: "./assets/dirt.png" }
+        { name: "t_person", url: "./assets/sprites/people/temp_person.png" },
+        { name: "t_ground", url: "./assets/sprites/world/dirt.png" }
     ])
     .load(setup);
 
