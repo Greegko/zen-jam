@@ -45,8 +45,8 @@ class Person {
     this.currentVelocity = 0;
 
     this.personality = "friend";
-    this.currentAction = this.getDefaultAction(this.currentBehaviour);
-
+    this.currentBehaviour = this.getDefaultBehaviour(PERSONALITIES[this.personality]);
+    this.currentAction = this.getDefaultAction(this.currentBehaviour);;
 
     this.exitActionTimer = 0;
     this.movemetPointTarget = [0, 0];
