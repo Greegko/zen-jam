@@ -7,7 +7,8 @@ import { hitTestRectangle } from './utils';
 
 Globals.app = new Application({
     width: window.innerWidth,
-    height: window.innerHeight
+    height: window.innerHeight,
+    backgroundColor: 255 ^ 3 - 255
 });
 
 document.body.appendChild(Globals.app.view);
@@ -20,7 +21,7 @@ const createAnimatedSprite = (name: string) => {
         .map(x => Texture.from(x));
 
     const animatedSprite = new AnimatedSprite(textures);
-    animatedSprite.animationSpeed = 3 / 60;
+    animatedSprite.animationSpeed = 10 / 60;
     animatedSprite.play();
 
     return animatedSprite;
@@ -64,7 +65,7 @@ function setup() {
 
     container.addChild(player.sprite);
 
-    Globals.app.stage.addChild(backgroundContainer);
+    // Globals.app.stage.addChild(backgroundContainer);
     Globals.app.stage.addChild(container);
 
     Globals.app.ticker.add(delta => loop(delta));
