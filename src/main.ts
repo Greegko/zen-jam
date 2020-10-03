@@ -27,12 +27,26 @@ function setup() {
 
     Globals.player = player;
 
-    for (let i = 0; i < 200; i++) {
-        let person = new Person();
-        person.init(getRandomCharacterSprite(), Math.random() * (i - 25) * 10, Math.random() * (i - 25) * 10);
+    for (let i = 0; i < 4; i++) {
+        let person = new Person("rager");
+        person.init(getRandomCharacterSprite(), Math.random() * (i - 25) * 120, Math.random() * (i - 25) * 120);
         Globals.crowd.push(person);
         container.addChild(person.sprite);
     }
+    for (let i = 0; i < 120; i++) {
+        let person = new Person("lazy");
+        person.init(getRandomCharacterSprite(), Math.random() * (i - 25) * 120, Math.random() * (i - 25) * 120);
+        Globals.crowd.push(person);
+        // console.log(person.sprite);
+        container.addChild(person.sprite);
+    }
+    // for (let i = 0; i < 10; i++) {
+    //     let person = new Person("lazy");
+    //     person.init(getRandomCharacterSprite(), Math.random() * (i - 25) * 100, Math.random() * (i - 25) * 100);
+    //     Globals.crowd.push(person);
+    //     // console.log(person.sprite);
+    //     container.addChild(person.sprite);
+    // }
 
     container.addChild(player.sprite);
     Globals.app.stage.addChild(container);

@@ -45,7 +45,7 @@ export const PERSONALITIES: Record<string, Personality> = {
   //         //   nextActions: ["shortWalk", "emote"]
   //         // },
   //         shortWalk: {
-  //           type: "walkTo",
+  //           type: "moveTo",
   //           options: { random: true, radius: 100 },
   //           nextActions: ["smallWait", "shortWalk"]
   //         },
@@ -84,13 +84,13 @@ export const PERSONALITIES: Record<string, Personality> = {
           longWait: {
             default: true,
             type: "wait",
-            options: { duration: 60 * 3 },
+            options: { duration: [60 * 5, 60 * 10] },
             nextActions: ["longWait", "shortWalk"]
           },
           shortWalk: {
-            type: "walkTo",
-            options: { random: true, radius: 50 },
-            nextActions: ["longWait", "longWait", "shortWalk"]
+            type: "moveTo",
+            options: { running: false, randomDirection: true, distance: [50] },
+            nextActions: ["longWait"]
           }
         }
       },
@@ -117,6 +117,221 @@ export const PERSONALITIES: Record<string, Personality> = {
         }
       },
     },
+  shy: {
+    behaviours: {
+      idle: {
+        default: true,
+        possibleEvents: ["moveAwayWhenPlayerIsClose"],
+        actions: {
+          longWait: {
+            default: true,
+            type: "wait",
+            options: { duration: [60 * 5, 60 * 10] },
+            nextActions: ["longWait", "shortWalk"]
+          },
+          shortWalk: {
+            type: "moveTo",
+            options: { running: false, randomDirection: true, distance: [50] },
+            nextActions: ["longWait"]
+          }
+        }
+      },
+      moveAwayFromPlayer: {
+        possibleEvents: [],
+        actions: {
+          moveTowardsTarget: {
+            default: true,
+            type: "stepAwayFromTarget",
+            options: {running: false, distance: 400},
+            nextActions: []
+          }
+        }
+      },
+    },
+    events: {
+      moveAwayWhenPlayerIsClose :
+        {
+          checkFunction: "hasApproached",
+          checkFunctionOptions: {distance: 400, setTriggerAsTarget: true },
+          callbackFunction: "changeBehaviour",
+          callbackFunctionOptions: { behaviour: "moveAwayFromPlayer" },
+          applyOnlyOnPlayer: true
+        }
+      },
+    },
+  calm: {
+      behaviours: {
+        idle: {
+          default: true,
+          possibleEvents: ["moveAwayWhenPlayerIsClose"],
+          actions: {
+            shortWait: {
+              default: true,
+              type: "wait",
+              options: { duration: [60 * 2, 60 * 4] },
+              nextActions: ["longWalk", "shortWalk", "shortWalk"]
+            },
+            shortWalk: {
+              type: "moveTo",
+              options: { running: false, randomDirection: true, distance: [100, 150] },
+              nextActions: ["shortWait", "shortWalk"]
+            },
+            longWalk: {
+              type: "moveTo",
+              options: { running: false, randomDirection: true, distance: [250, 500] },
+              nextActions: ["shortWait"]
+            }
+
+          }
+        },
+        moveAwayFromPlayer: {
+          possibleEvents: [],
+          actions: {
+            moveTowardsTarget: {
+              default: true,
+              type: "stepAwayFromTarget",
+              options: {running: false, distance: 40},
+              nextActions: []
+            }
+          }
+        },
+      },
+      events: {
+        moveAwayWhenPlayerIsClose :
+          {
+            checkFunction: "hasApproached",
+            checkFunctionOptions: {distance: 30, setTriggerAsTarget: true },
+            callbackFunction: "changeBehaviour",
+            callbackFunctionOptions: { behaviour: "moveAwayFromPlayer" },
+            applyOnlyOnPlayer: true
+          }
+        },
+    },
+  stalker: {
+      behaviours: {
+        idle: {
+          default: true,
+          possibleEvents: ["startChaseWhenPlayerIsClose"],
+          actions: {
+            shortWait: {
+              default: true,
+              type: "wait",
+              options: { duration: [60 * 2, 60 * 4] },
+              nextActions: ["longWalk", "shortWalk", "shortWalk"]
+            },
+            shortWalk: {
+              type: "moveTo",
+              options: { running: false, randomDirection: true, distance: [100, 150] },
+              nextActions: ["shortWait", "shortWalk"]
+            },
+            longWalk: {
+              type: "moveTo",
+              options: { rrunning: false, andomDirection: true, distance: [250, 500] },
+              nextActions: ["shortWait"]
+            }
+          }
+        },
+        chasePlayer: {
+          possibleEvents: [],
+          actions: {
+            chaseTarget: {
+              default: true,
+              type: "chasePlayer",
+              options: {running: false, duration: [6 * 60]},
+              nextActions: ["rest"]
+            },
+            rest: {
+              default: true,
+              type: "wait",
+              options: { duration: [60 * 10] },
+              nextActions: []
+            },
+          }
+        },
+      },
+      events: {
+        startChaseWhenPlayerIsClose :
+          {
+            checkFunction: "hasApproached",
+            checkFunctionOptions: {distance: 400, setTriggerAsTarget: true },
+            callbackFunction: "changeBehaviour",
+            callbackFunctionOptions: { behaviour: "chasePlayer" },
+            applyOnlyOnPlayer: true
+          }
+        },   
+    },
+  rager: {
+    behaviours: {
+      run: {
+        default: true,
+        possibleEvents: [],
+        actions: {
+          runShort: {
+            default: true,
+            type: "moveTo",
+            options: { running: true, randomDirection: true, distance: [300, 400] },
+            nextActions: ["runShort", "runShort", "runLong", "walkShort"]
+          },
+          runLong: {
+            type: "moveTo",
+            options: { running: true, randomDirection: true, distance: [600, 1000] },
+            nextActions: ["runShort", "walkShort"]
+          },
+          walkShort: {
+            type: "moveTo",
+            options: { running: false, randomDirection: true, distance: [100, 300] },
+            nextActions: ["runShort", "runLong"]
+          },
+        }
+      },
+      
+    },
+    events: {},   
+  },
+  snapper: {
+    behaviours: {
+      standStill: {
+        default: true,
+        possibleEvents: ["snapAtPlayer"],
+        actions: {
+          justWait: {
+            default: true,
+            type: "wait",
+            options: { duration: [60 * 10] },
+            nextActions: ["justWait",]
+          }
+          //evil emote?
+        }
+      },
+      chasePlayer: {
+        possibleEvents: [],
+        actions: {
+          chaseTarget: {
+            default: true,
+            type: "chasePlayer",
+            options: {running: true, duration: [3 * 60]},
+            nextActions: ["rest"]
+          },
+          rest: {
+            default: true,
+            type: "wait",
+            options: { duration: [60 * 5] },
+            nextActions: []
+          },
+        }
+      },
+    },
+    events: {
+      snapAtPlayer :
+        {
+          checkFunction: "hasApproached",
+          checkFunctionOptions: {distance: 200, setTriggerAsTarget: true },
+          callbackFunction: "changeBehaviour",
+          callbackFunctionOptions: { behaviour: "chasePlayer" },
+          applyOnlyOnPlayer: true
+        }
+      },
+    },
   friend: {
     behaviours: {
       idle: {
@@ -130,7 +345,7 @@ export const PERSONALITIES: Record<string, Personality> = {
             nextActions: ["shortWalk", "smallWait"]
           },
           shortWalk: {
-            type: "walkTo",
+            type: "moveTo",
             options: { random: true, radius: 100 },
             nextActions: ["smallWait", "shortWalk"]
           }

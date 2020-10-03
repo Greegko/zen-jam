@@ -32,6 +32,10 @@ class Person {
   private currentVelocity: number;
   private exitActionTimer: number;
 
+  constructor(_personality: string){
+    this.personality = _personality;
+  }
+
   init(sprite: Sprite, x: number, y: number) {
     this.sprite = sprite;
 
@@ -48,8 +52,7 @@ class Person {
     this.running = false;
     this.movementDirection = [-1, 0];
     this.currentVelocity = 0;
-
-    this.personality = "lazy";
+    
     this.currentBehaviour = this.getDefaultBehaviour(PERSONALITIES[this.personality]);
     this.currentAction = this.getDefaultAction(this.currentBehaviour);
 
@@ -60,8 +63,9 @@ class Person {
     this.actions = {
       wait: {
         setup: (args) => {
-          this.exitActionTimer = args.duration;
-
+          if(args.duration.length > 1) this.exitActionTimer = Tools.randomFromRange(args.duration[0], args.duration[1]);
+          this.exitActionTimer = args.duration[0];
+          
         },
         update: () => {
           this.exitActionTimer--;
@@ -72,22 +76,26 @@ class Person {
           }
         }
       },
-      walkTo: {
+      moveTo: {
         setup: (args) => {
-          if (args.random) {
+          
+          if (args.randomDirection) {
             let randomAngle = Math.random() * 2 * Math.PI;
             let randomVector = [Math.cos(randomAngle), Math.sin(randomAngle)];
 
             this.movementDirection = randomVector.slice() //slice is used as a copy method
+            
+            let distance;
+            if(args.distance.length > 1) distance = Tools.randomFromRange(args.distance[0], args.distance[1]);
+            else distance = args.distance[0];
 
-            //the distance to which they move is fixed
-            randomVector[0] *= args.radius;
-            randomVector[1] *= args.radius;
+            randomVector[0] *= distance;
+            randomVector[1] *= distance;
 
             this.movemetPointTarget = [this.sprite.x + randomVector[0], this.sprite.y + randomVector[1]];
 
             this.moving = true;
-            this.running = false;
+            this.running = args.running;
 
             // console.log("My Pos ", this.sprite.x + ", " + this.sprite.y);
             // console.log("Moving To", this.movemetPointTarget);
@@ -120,7 +128,38 @@ class Person {
           this.movementDirection = [x, y];
         }
       },
-      stepAwayFromTarget: {
+      chasePlayer:{
+        setup: (args)=>{
+          this.moving = true;
+          this.running = args.running;
+
+          if(args.duration.length > 1) this.exitActionTimer = Tools.randomFromRange(args.duration[0], args.duration[1]);
+          this.exitActionTimer = args.duration[0];
+
+          let dir = Tools.directionFromPoint1to2(
+            [this.sprite.x, this.sprite.y],
+            [this.targetPerson.sprite.x, this.targetPerson.sprite.y],
+          );
+          this.movementDirection = dir.slice();
+        },
+        update: (args)=>{
+
+          let dir = Tools.directionFromPoint1to2(
+            [this.sprite.x, this.sprite.y],
+            [this.targetPerson.sprite.x, this.targetPerson.sprite.y],
+          );
+          this.movementDirection = dir.slice();
+
+          this.exitActionTimer--
+          console.log(this.exitActionTimer);
+          
+          if (this.exitActionTimer <= 0) {
+            this.moving = false;
+            this.changeAction();
+          }
+        }
+      },
+      stepAwayFromTarget:{
         setup: (args) => {
           this.running = args.running;
           this.moving = true;
@@ -200,6 +239,7 @@ class Person {
 
     for (let i = 0; i < this.currentBehaviour.possibleEvents.length; i++) {
       const eventName = this.currentBehaviour.possibleEvents[i];
+      
       const event = PERSONALITIES[this.personality].events[eventName];
 
       if (event.applyOnlyOnPlayer) {
@@ -234,8 +274,8 @@ class Person {
 
   private giveNextAction(action) {
 
-
-    if (action.nextActions.length > 0) {
+    if(action.nextActions.length > 0){
+      
       let newAction = action.nextActions[Math.floor(Math.random() * action.nextActions.length)];
       return this.currentBehaviour.actions[newAction];
     }

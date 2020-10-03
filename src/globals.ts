@@ -8,8 +8,8 @@ interface IGlobals {
   player: Player;
 }
 
-export const WALKING_SPEED = 5;
-export const RUNNING_SPEED = 10;
+export const WALKING_SPEED = 3;
+export const RUNNING_SPEED = 8;
 
 export const Globals: IGlobals = {
   app: null,

@@ -1,6 +1,6 @@
 import { Sprite } from "pixi.js";
 import { getPlayerSprite } from "./assets";
-import { WALKING_SPEED } from "./globals";
+import { WALKING_SPEED, RUNNING_SPEED } from "./globals";
 
 
 export class Player {
@@ -10,6 +10,7 @@ export class Player {
 
   private xDirection: number = 0;
   private yDirection: number = 0;
+  private running: boolean = false;
 
   init(x: number, y: number) {
     this.sprite = new Sprite(this.spriteTextures.F.texture);
@@ -17,7 +18,7 @@ export class Player {
     this.sprite.x = x;
     this.sprite.y = y;
 
-    document.addEventListener('keydown', this.setInput.bind(this));
+    document.addEventListener('keydown', this.pressInput.bind(this));
     document.addEventListener('keyup', this.releaseInput.bind(this));
   }
 
@@ -46,33 +47,42 @@ export class Player {
       case 'ArrowDown':
         this.yDirection = 0;
         break;
+      case 'Shift':
+      // case ' ':
+        this.running = false;
+        break;
     }
   }
 
-  private setInput(event: KeyboardEvent) {
+  private pressInput(event: KeyboardEvent) {
     const key = event.key;
+    
 
     switch (key) {
       case 'a':
       case 'ArrowLeft':
         this.sprite.texture = this.spriteTextures.L.texture;
-        this.xDirection = -WALKING_SPEED;
+        this.xDirection = this.running? -RUNNING_SPEED : -WALKING_SPEED;
         break;
       case 'w':
       case 'ArrowUp':
         this.sprite.texture = this.spriteTextures.B.texture;
-        this.yDirection = -WALKING_SPEED;
+        this.yDirection = this.running? -RUNNING_SPEED : -WALKING_SPEED;
         break;
       case 'd':
       case 'ArrowRight':
         this.sprite.texture = this.spriteTextures.R.texture;
-        this.xDirection = WALKING_SPEED;
+        this.xDirection = this.running? RUNNING_SPEED : WALKING_SPEED;
         break;
       case 's':
       case 'ArrowDown':
         this.sprite.texture = this.spriteTextures.F.texture;
-        this.yDirection = WALKING_SPEED;
+        this.yDirection = this.running? RUNNING_SPEED : WALKING_SPEED;
         break;
+      case 'Shift':
+      // case ' ':
+          this.running = true;
+          break;
     }
   }
 

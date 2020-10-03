@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/Greegko/zen-jam#readme",
   "dependencies": {
+    "howler": "^2.2.0",
     "pixi.js": "^5.3.3",
     "source-map": "0.7.3",
     "ts-loader": "8.0.4",

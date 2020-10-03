@@ -13,6 +13,20 @@ let Tools = {
 
     return distance;
   
+  },
+  directionFromPoint1to2: function(p1: number[], p2: number[]) {
+    let dir = [
+      p2[0] - p1[0],
+      p2[1] - p1[1]
+    ];
+    let dir_length = Math.sqrt(Math.pow(dir[0], 2) + Math.pow(dir[1], 2));
+
+    dir = [dir[0]/dir_length, dir[1]/dir_length]; 
+  
+    return dir;
+  },
+  randomFromRange: function(min, max){
+    return Math.random() * (max - min) + min;
   }
 }
 
