@@ -63,8 +63,7 @@ class Person {
 
     this.behaviourTimer -= delta;
     if (this.behaviourTimer <= 0) {
-      console.log("click!");
-      this.behaviourTimer = 60 * 0.5;
+      this.behaviourTimer = 60 * 0.5 + Math.random() * 2 * 60;
       if (this.moving) this.moving = false;
       else {
         this.moving = true;
@@ -72,7 +71,6 @@ class Person {
       }
 
     }
-    //console.log(this.behaviourTimer);
 
   }
 
