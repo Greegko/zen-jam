@@ -1,4 +1,4 @@
-import { Globals, SPEED } from "./globals";
+import { Globals, WALKING_SPEED } from "./globals";
 import { Pixi } from "./main";
 
 export class Player {
@@ -58,19 +58,19 @@ export class Player {
     switch (key) {
       case 'a':
       case 'ArrowLeft':
-        this.xDirection = -SPEED;
+        this.xDirection = -WALKING_SPEED;
         break;
       case 'w':
       case 'ArrowUp':
-        this.yDirection = -SPEED;
+        this.yDirection = -WALKING_SPEED;
         break;
       case 'd':
       case 'ArrowRight':
-        this.xDirection = SPEED;
+        this.xDirection = WALKING_SPEED;
         break;
       case 's':
       case 'ArrowDown':
-        this.yDirection = SPEED;
+        this.yDirection = WALKING_SPEED;
         break;
     }
   }

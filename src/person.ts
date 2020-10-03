@@ -1,4 +1,4 @@
-import { SPEED } from './globals';
+import { WALKING_SPEED, RUNNING_SPEED } from './globals';
 import { Pixi, Globals } from './main'
 
 class Person {
@@ -23,8 +23,8 @@ class Person {
 
     Globals.app.stage.addChild(this.sprite);
 
-    this.maxVelocityWalk = SPEED;
-    this.maxVelocityRun = 1;
+    this.maxVelocityWalk = WALKING_SPEED;
+    this.maxVelocityRun = RUNNING_SPEED;
 
     this.accelleration = 0.5;
     
