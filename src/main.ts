@@ -1,22 +1,11 @@
-import * as PIXI from 'pixi.js'
+import { Application, Loader, ParticleContainer, TilingSprite } from 'pixi.js';
 // import style from './style.css'
 import Person from './person'
 
-import { Globals } from './globals';
+import { Globals, RESOURCES } from './globals';
 import { Player } from './player';
 
-
-let Pixi = {
-    Application: PIXI.Application,
-    Loader: PIXI.Loader.shared,
-    Resources: PIXI.Loader.shared.resources,
-    Sprite: PIXI.Sprite,
-    TilingSprite: PIXI.TilingSprite,
-    Ticker: PIXI.Ticker,
-}
-
-
-Globals.app = new Pixi.Application({
+Globals.app = new Application({
     width: window.innerWidth,
     height: window.innerHeight,
     // transparent: true 
@@ -24,17 +13,15 @@ Globals.app = new Pixi.Application({
 // document.body.className = style["body"];
 document.body.appendChild(Globals.app.view);
 
-Pixi.Loader
-    .add([
-        { name: "t_person", url: "./assets/sprites/people/temp_person.png" },
-        { name: "t_ground", url: "./assets/sprites/world/dirt.png" }
-    ])
-    .load(setup);
+Loader.shared.add([
+    { name: "t_person", url: "./assets/sprites/people/temp_person.png" },
+    { name: "t_ground", url: "./assets/sprites/world/dirt.png" }
+]).load(setup);
 
 function setup() {
 
-    const tilingSprite = new Pixi.TilingSprite(
-        Pixi.Resources["t_ground"].texture,
+    const tilingSprite = new TilingSprite(
+        RESOURCES["t_ground"].texture,
         Globals.app.screen.width,
         Globals.app.screen.height,
     );
@@ -47,13 +34,18 @@ function setup() {
 
     Globals.player = player;
 
-    let myPerson = new Person();
-    myPerson.init(
+    let person = new Person();
+    Globals.crowd.push(person);
+    person.init(
         Globals.app.renderer.width / 2,
         Globals.app.renderer.height / 2
     );
 
-    Globals.crowd.push(myPerson);
+    const container = new ParticleContainer();
+    container.addChild(player.sprite);
+    container.addChild(person.sprite);
+
+    Globals.app.stage.addChild(container);
 
     Globals.app.ticker.add(delta => loop(delta));
 }
@@ -67,6 +59,3 @@ function loop(delta) {
         person.update(delta);
     }
 }
-
-
-export { Pixi, Globals };

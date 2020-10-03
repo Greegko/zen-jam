@@ -1,22 +1,19 @@
-import { Globals, WALKING_SPEED } from "./globals";
-import { Pixi } from "./main";
+import { Sprite } from "pixi.js";
+import { RESOURCES, WALKING_SPEED } from "./globals";
 
 export class Player {
-
-  private sprite: PIXI.Sprite;
+  public sprite: Sprite;
 
   private xDirection: number = 0;
   private yDirection: number = 0;
 
   init(x: number, y: number) {
-    this.sprite = new Pixi.Sprite(
-      Pixi.Resources["t_person"].texture
+    this.sprite = new Sprite(
+      RESOURCES["t_person"].texture
     );
 
     this.sprite.x = x;
     this.sprite.y = y;
-
-    Globals.app.stage.addChild(this.sprite);
 
     document.addEventListener('keydown', this.setInput.bind(this));
     document.addEventListener('keyup', this.releaseInput.bind(this));

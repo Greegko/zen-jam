@@ -1,16 +1,19 @@
+import { Application, Loader } from "pixi.js";
 import Person from "./person";
 import { Player } from './player';
 
 interface IGlobals {
-  app: PIXI.Application;
+  app: Application;
   crowd: Person[];
-  player?: Player;
+  player: Player;
 }
 
 export const WALKING_SPEED = 5;
 export const RUNNING_SPEED = 10;
+export const RESOURCES = Loader.shared.resources;
 
 export const Globals: IGlobals = {
   app: null,
-  crowd: []
+  crowd: [],
+  player: null
 }
