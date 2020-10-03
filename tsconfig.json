@@ -8,5 +8,11 @@
     "emitDecoratorMetadata": true,
     "noUnusedLocals": true,
     "noImplicitAny": false
-  }
+  },
+  "paths": {
+    "*": [
+        "node_modules/*",
+        "src/*"
+    ]
+},
 }
