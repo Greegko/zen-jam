@@ -1,7 +1,6 @@
 import { Pixi, Globals } from './main'
 
 class Person {
-  private sprite: PIXI.Sprite;
 
   constructor() {
     this.sprite = new Pixi.Sprite(
@@ -12,11 +11,16 @@ class Person {
     this.sprite.y = Globals.app.renderer.height / 2;
 
     Globals.app.stage.addChild(this.sprite);
+
+    
+
   }
 
   update() {
     this.sprite.x += 1;
   }
+
+  
 }
 
 export default Person;

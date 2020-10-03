@@ -61,7 +61,6 @@ class Person {
   }
 
   tickBehaviour(delta){
-    console.log(delta);
     
     this.behaviourTimer += delta;
     //console.log(this.behaviourTimer);
