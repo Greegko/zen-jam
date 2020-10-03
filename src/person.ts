@@ -1,7 +1,12 @@
 import { Sprite } from 'pixi.js';
-import Personality from './personality';
+import { Action, Behaviour, PERSONALITIES, Personality } from './personality';
 import Tools from "./tools";
 import { WALKING_SPEED, RUNNING_SPEED, RESOURCES, Globals } from './globals';
+
+interface PersonAction {
+  setup: any;
+  update: any;
+}
 
 class Person {
   public sprite: Sprite;
@@ -12,11 +17,12 @@ class Person {
   private running: boolean;
   private movementDirection: number[];
   private movemetPointTarget: number[];
+  private currentBehaviour: Behaviour;
+  private personality: string;
   // private movementTarget: number[];
   private currentVelocity: number;
-  public personality: Personality;
-  private currentAction: any;
-  private actions: Object;
+  private currentAction: Action;
+  private actions: Record<string, PersonAction>;
   private exitActionTimer: number;
 
   init(x: number, y: number) {
@@ -38,8 +44,9 @@ class Person {
     // this.movementTarget = [0, 0];
     this.currentVelocity = 0;
 
-    this.personality = new Personality({ type: "friend" });
-    this.currentAction = this.personality.setup();
+    this.personality = "friend";
+    this.currentAction = this.getDefaultAction(this.currentBehaviour);
+
 
     this.exitActionTimer = 0;
     this.movemetPointTarget = [0, 0];
@@ -55,7 +62,7 @@ class Person {
           if (this.exitActionTimer <= 0) {
             // console.log("wait is over");
 
-            this.exitAction();
+            this.changeAction();
           }
         }
       },
@@ -95,7 +102,7 @@ class Person {
             this.moving = false;
             // console.log("movement done");
 
-            this.exitAction();
+            this.changeAction();
           }
         }
       },
@@ -116,29 +123,42 @@ class Person {
     this.actions[this.currentAction.type].setup(this.currentAction.options);
   }
 
-  checkForEvents() {
-    this.personality
-  }
-
   update(delta) {
-    this.checkForEvents();
     this.applyMovement();
     this.actions[this.currentAction.type].update();
     //this.tickBehaviour(delta)
-  }
-
-  exitAction() {
-    // console.log("Action Finished ---");
-    this.changeAction();
-
   }
 
   collade() {
 
   }
 
+  private giveNextAction(action) {
+    let newAction = action.nextActions[Math.floor(Math.random() * action.nextActions.length)];
+    console.log("new action", newAction);
+
+    return this.currentBehaviour.actions[newAction];
+  }
+
+  private getDefaultBehaviour(personality: Personality) {
+    for (let key in personality.behaviours) {
+      let behaviour = personality.behaviours[key];
+      if (behaviour.default) return behaviour;
+    }
+    throw 'No default behaviour in this personality!';
+  }
+
+  private getDefaultAction(behaviour: Behaviour): Action {
+    for (let key in behaviour.actions) {
+      let action = behaviour.actions[key];
+      if (action.default) return action;
+    }
+
+    throw 'No default action in this behaviour!';
+  }
+
   private changeAction() {
-    this.currentAction = this.personality.giveNextAction(this.currentAction);
+    this.currentAction = this.giveNextAction(this.currentAction);
     //setUp the new action
     this.actions[this.currentAction.type].setup(this.currentAction.options);
   }
