@@ -88,7 +88,7 @@ function generatePersons() {
     }
     for (let i = 0; i < 70; i++) {
         let person = new Person("calm");
-        person.init(getRandomCharacterSprite(), (Math.random() * 2 - 1) * 1000 + 1000, (Math.random() * 2 - 1) * 1000);
+        person.init(getRandomCharacterSprite(), (Math.random() * 2 - 1) * 1000 + 1800, (Math.random() * 2 - 1) * 1000);
         Globals.crowd.push(person);
         // console.log(person.sprite);
         crowdContainer.addChild(person.sprite);
@@ -96,31 +96,31 @@ function generatePersons() {
     }
     for (let i = 0; i < 5; i++) {
         let person = new Person("friend");
-        person.init(getRandomCharacterSprite(), (Math.random() * 2 - 1) * 1000 + 1000, (Math.random() * 2 - 1) * 1000);
+        person.init(getRandomCharacterSprite(), (Math.random() * 2 - 1) * 1000 + 1800, (Math.random() * 2 - 1) * 1000);
         Globals.crowd.push(person);
         // console.log(person.sprite);
         crowdContainer.addChild(person.sprite);
         if (person.overlaySprite instanceof Sprite) crowdContainer.addChild(person.overlaySprite);
     }
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 10; i++) {
         let person = new Person("stalker");
-        person.init(getRandomCharacterSprite(), (Math.random() * 2 - 1) * 1000 + 1000, (Math.random() * 2 - 1) * 1000);
+        person.init(getRandomCharacterSprite(), (Math.random() * 2 - 1) * 1000 + 1800, (Math.random() * 2 - 1) * 1000);
         Globals.crowd.push(person);
         // console.log(person.sprite);
         crowdContainer.addChild(person.sprite);
         if (person.overlaySprite instanceof Sprite) crowdContainer.addChild(person.overlaySprite);
     }
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 4; i++) {
         let person = new Person("rager");
-        person.init(getRandomCharacterSprite(), (Math.random() * 2 - 1) * 1000 + 1000, (Math.random() * 2 - 1) * 1000);
+        person.init(getRandomCharacterSprite(), (Math.random() * 2 - 1) * 1000 + 1800, (Math.random() * 2 - 1) * 1000);
         Globals.crowd.push(person);
         // console.log(person.sprite);
         crowdContainer.addChild(person.sprite);
         if (person.overlaySprite instanceof Sprite) crowdContainer.addChild(person.overlaySprite);
     }
-    for (let i = 0; i < 40; i++) {
+    for (let i = 0; i < 30; i++) {
         let person = new Person("shy");
-        person.init(getRandomCharacterSprite(), (Math.random() * 2 - 1) * 1000 + 1000, (Math.random() * 2 - 1) * 1000);
+        person.init(getRandomCharacterSprite(), (Math.random() * 2 - 1) * 1000 + 1800, (Math.random() * 2 - 1) * 1000);
         Globals.crowd.push(person);
         // console.log(person.sprite);
         crowdContainer.addChild(person.sprite);
@@ -128,7 +128,7 @@ function generatePersons() {
     }
     for (let i = 0; i < 20; i++) {
         let person = new Person("snapper");
-        person.init(getRandomCharacterSprite(), (Math.random() * 2 - 1) * 1000 + 1000, (Math.random() * 2 - 1) * 1000);
+        person.init(getRandomCharacterSprite(), (Math.random() * 2 - 1) * 1000 + 1800, (Math.random() * 2 - 1) * 1000);
         Globals.crowd.push(person);
         // console.log(person.sprite);
         crowdContainer.addChild(person.sprite);
