@@ -35,6 +35,12 @@ const mainGameScreen = new Container();
 const crowdContainer = new Container();
 const circleMask = new CircleMask(mainGameScreen, Globals.app.ticker);
 
+let isRunning = false;
+setTimeout(() => {
+    document.getElementsByTagName('canvas')[0].style.visibility = 'visible';
+    isRunning = true;
+}, 3000);
+
 function setup() {
     const mist = new Graphics();
     mist.beginFill(0x4a4a4a);
@@ -182,6 +188,8 @@ function startLimbo() {
 }
 
 function crowdContainerLoop(delta) {
+    if (!isRunning) return;
+
     Globals.player.update();
 
     updatePlayerCamera(crowdContainer, Globals.player.sprite);
