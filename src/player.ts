@@ -1,4 +1,4 @@
-import { Sprite } from "pixi.js";
+import { filters, Sprite } from "pixi.js";
 import { getPlayerSprite } from "./assets";
 import { WALKING_SPEED, RUNNING_SPEED } from "./globals";
 
@@ -20,6 +20,14 @@ export class Player {
 
     document.addEventListener('keydown', this.pressInput.bind(this));
     document.addEventListener('keyup', this.releaseInput.bind(this));
+  }
+
+  inverseColor() {
+    if (this.sprite.filters) return this.sprite.filters = null;
+
+    const inverseColorMatrix = new filters.ColorMatrixFilter();
+    inverseColorMatrix.negative(false);
+    this.sprite.filters = [inverseColorMatrix];
   }
 
   update() {
@@ -48,7 +56,7 @@ export class Player {
         this.yDirection = 0;
         break;
       case 'Shift':
-      // case ' ':
+        // case ' ':
         this.running = false;
         break;
     }
@@ -56,33 +64,33 @@ export class Player {
 
   private pressInput(event: KeyboardEvent) {
     const key = event.key;
-    
+
 
     switch (key) {
       case 'a':
       case 'ArrowLeft':
         this.sprite.texture = this.spriteTextures.L.texture;
-        this.xDirection = this.running? -RUNNING_SPEED : -WALKING_SPEED;
+        this.xDirection = this.running ? -RUNNING_SPEED : -WALKING_SPEED;
         break;
       case 'w':
       case 'ArrowUp':
         this.sprite.texture = this.spriteTextures.B.texture;
-        this.yDirection = this.running? -RUNNING_SPEED : -WALKING_SPEED;
+        this.yDirection = this.running ? -RUNNING_SPEED : -WALKING_SPEED;
         break;
       case 'd':
       case 'ArrowRight':
         this.sprite.texture = this.spriteTextures.R.texture;
-        this.xDirection = this.running? RUNNING_SPEED : WALKING_SPEED;
+        this.xDirection = this.running ? RUNNING_SPEED : WALKING_SPEED;
         break;
       case 's':
       case 'ArrowDown':
         this.sprite.texture = this.spriteTextures.F.texture;
-        this.yDirection = this.running? RUNNING_SPEED : WALKING_SPEED;
+        this.yDirection = this.running ? RUNNING_SPEED : WALKING_SPEED;
         break;
       case 'Shift':
-      // case ' ':
-          this.running = true;
-          break;
+        // case ' ':
+        this.running = true;
+        break;
     }
   }
 

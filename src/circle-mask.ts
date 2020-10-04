@@ -27,6 +27,12 @@ export class CircleMask {
     this.ticker.add(this.update);
   }
 
+  revert(callback: Function) {
+    this.callback = callback;
+
+    this.ticker.add(this.revertUpdate);
+  }
+
   remove() {
     this.stage.removeChild(this.focusSprite);
     this.stage.mask = undefined;
@@ -34,7 +40,7 @@ export class CircleMask {
 
   private createTextureMask() {
     const radius = 1500;
-    const blurSize = 32;
+    const blurSize = 350;
 
     const circle = new Graphics()
       .beginFill(0xFF0000)
@@ -56,6 +62,18 @@ export class CircleMask {
     if (this.scale < 0.001) {
       this.callback();
       this.ticker.remove(this.update);
+    }
+  }
+
+  private revertUpdate = () => {
+    this.scale *= 1.1;
+    this.focusSprite.scale.set(this.scale);
+    this.focusSprite.x = Globals.app.view.width / 2 - this.focusSprite.width / 2;
+    this.focusSprite.y = Globals.app.view.height / 2 - this.focusSprite.height / 2;
+
+    if (this.scale > 1) {
+      this.callback();
+      this.ticker.remove(this.revertUpdate);
     }
   }
 }

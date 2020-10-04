@@ -4,11 +4,23 @@ import Person from './person'
 import { Globals } from './globals';
 import { Player } from './player';
 import { CHARACTER_ASSETS_IDS, getCharacterId, getRandomCharacterSprite } from './assets';
+import { CircleMask } from './circle-mask';
 
 Globals.app = new Application({
     width: window.innerWidth,
     height: window.innerHeight
 });
+
+let isLimboActive = true;
+Globals.triggerLimbo = () => {
+    if (isLimboActive) {
+        enterLimbo();
+    } else {
+        exitLimbo();
+    }
+
+    isLimboActive = !isLimboActive;
+}
 
 document.body.appendChild(Globals.app.view);
 
@@ -19,14 +31,16 @@ const allAssetsUrls = Object.entries(CHARACTER_ASSETS_IDS).reduce(
 
 Loader.shared.add(allAssetsUrls).load(setup);
 
-const container = new Container();
-function setup() {
+const mainGameScreen = new Container();
+const crowdContainer = new Container();
+const circleMask = new CircleMask(mainGameScreen, Globals.app.ticker);
 
+function setup() {
     const mist = new Graphics();
     mist.beginFill(0x4a4a4a);
     mist.drawRect(0, 0, Globals.app.view.width, Globals.app.view.height);
     mist.endFill();
-    Globals.app.stage.addChild(mist);
+    mainGameScreen.addChild(mist);
 
     const player = new Player();
     player.init(0, 0);
@@ -39,62 +53,60 @@ function setup() {
         person.init(getRandomCharacterSprite(), (Math.random() * 2 - 1) * 1000 + 1000, (Math.random() * 2 - 1) * 1000);
         Globals.crowd.push(person);
         // console.log(person.sprite);
-        container.addChild(person.sprite);
-        if (person.overlaySprite instanceof Sprite) container.addChild(person.overlaySprite);
+        crowdContainer.addChild(person.sprite);
+        if (person.overlaySprite instanceof Sprite) crowdContainer.addChild(person.overlaySprite);
     }
     for (let i = 0; i < 70; i++) {
         let person = new Person("calm");
         person.init(getRandomCharacterSprite(), (Math.random() * 2 - 1) * 1000 + 1000, (Math.random() * 2 - 1) * 1000);
         Globals.crowd.push(person);
         // console.log(person.sprite);
-        container.addChild(person.sprite);
-        if (person.overlaySprite instanceof Sprite) container.addChild(person.overlaySprite);
+        crowdContainer.addChild(person.sprite);
+        if (person.overlaySprite instanceof Sprite) crowdContainer.addChild(person.overlaySprite);
     }
     for (let i = 0; i < 5; i++) {
         let person = new Person("friend");
         person.init(getRandomCharacterSprite(), (Math.random() * 2 - 1) * 1000 + 1000, (Math.random() * 2 - 1) * 1000);
         Globals.crowd.push(person);
         // console.log(person.sprite);
-        container.addChild(person.sprite);
-        if (person.overlaySprite instanceof Sprite) container.addChild(person.overlaySprite);
+        crowdContainer.addChild(person.sprite);
+        if (person.overlaySprite instanceof Sprite) crowdContainer.addChild(person.overlaySprite);
     }
     for (let i = 0; i < 3; i++) {
         let person = new Person("stalker");
         person.init(getRandomCharacterSprite(), (Math.random() * 2 - 1) * 1000 + 1000, (Math.random() * 2 - 1) * 1000);
         Globals.crowd.push(person);
         // console.log(person.sprite);
-        container.addChild(person.sprite);
-        if (person.overlaySprite instanceof Sprite) container.addChild(person.overlaySprite);
+        crowdContainer.addChild(person.sprite);
+        if (person.overlaySprite instanceof Sprite) crowdContainer.addChild(person.overlaySprite);
     }
     for (let i = 0; i < 3; i++) {
         let person = new Person("rager");
         person.init(getRandomCharacterSprite(), (Math.random() * 2 - 1) * 1000 + 1000, (Math.random() * 2 - 1) * 1000);
         Globals.crowd.push(person);
         // console.log(person.sprite);
-        container.addChild(person.sprite);
-        if (person.overlaySprite instanceof Sprite) container.addChild(person.overlaySprite);
+        crowdContainer.addChild(person.sprite);
+        if (person.overlaySprite instanceof Sprite) crowdContainer.addChild(person.overlaySprite);
     }
     for (let i = 0; i < 40; i++) {
         let person = new Person("shy");
         person.init(getRandomCharacterSprite(), (Math.random() * 2 - 1) * 1000 + 1000, (Math.random() * 2 - 1) * 1000);
         Globals.crowd.push(person);
         // console.log(person.sprite);
-        container.addChild(person.sprite);
-        if (person.overlaySprite instanceof Sprite) container.addChild(person.overlaySprite);
+        crowdContainer.addChild(person.sprite);
+        if (person.overlaySprite instanceof Sprite) crowdContainer.addChild(person.overlaySprite);
     }
     for (let i = 0; i < 20; i++) {
         let person = new Person("snapper");
         person.init(getRandomCharacterSprite(), (Math.random() * 2 - 1) * 1000 + 1000, (Math.random() * 2 - 1) * 1000);
         Globals.crowd.push(person);
         // console.log(person.sprite);
-        container.addChild(person.sprite);
-        if (person.overlaySprite instanceof Sprite) container.addChild(person.overlaySprite);
+        crowdContainer.addChild(person.sprite);
+        if (person.overlaySprite instanceof Sprite) crowdContainer.addChild(person.overlaySprite);
     }
 
-    container.addChild(player.sprite);
-    Globals.app.stage.addChild(container);
-
-
+    crowdContainer.addChild(player.sprite);
+    mainGameScreen.addChild(crowdContainer);
 
     let vignette = Sprite.from('./assets/sprites/FXs/vignette_and_dust.png');
     vignette.x = 0;
@@ -102,16 +114,70 @@ function setup() {
     vignette.zIndex = -10000;
     vignette.width = Globals.app.screen.width;
     vignette.height = Globals.app.screen.height;
-    Globals.app.stage.addChild(vignette);
+    mainGameScreen.addChild(vignette);
 
-    Globals.app.ticker.add(delta => loop(delta));
+    Globals.app.ticker.add(crowdContainerLoop);
+    Globals.app.stage.addChild(mainGameScreen);
 }
 
+let limboResolver: Function = null;
 
-function loop(delta) {
+function enterLimbo() {
+    Globals.app.ticker.remove(crowdContainerLoop);
+    circleMask.start(() => {
+        limboResolver = startLimbo();
+    });
+}
+
+function exitLimbo() {
+    crowdContainer.removeChildren(0);
+    Globals.crowd = [];
+
+    limboResolver();
+    circleMask.revert(() => {
+        Globals.app.ticker.add(crowdContainerLoop);
+    });
+}
+
+function startLimbo() {
+    const limboScreen = new Container();
+    const goodFellow = new Person('limboFriend');
+
+    goodFellow.init(
+        getRandomCharacterSprite(),
+        Math.floor(Math.random() * Globals.app.screen.width) - Globals.app.screen.width / 2,
+        Math.floor(Math.random() * Globals.app.screen.height) - Globals.app.screen.height / 2
+    );
+
+    limboScreen.addChild(Globals.player.sprite);
+    limboScreen.addChild(goodFellow.sprite);
+
+    Globals.app.stage.addChild(limboScreen);
+
+    function limboLoop() {
+        Globals.player.update();
+
+        updatePlayerCamera(limboScreen, Globals.player.sprite);
+        goodFellow.update(0, 0);
+        // updatePersonsIndex(limboScreen, [Globals.player.sprite, goodFellow.sprite]);
+    }
+
+    Globals.app.ticker.add(limboLoop);
+
+    return () => {
+        Globals.app.ticker.remove(limboLoop);
+        Globals.app.stage.removeChild(limboScreen);
+
+        Globals.crowd.push(goodFellow);
+        crowdContainer.addChild(goodFellow.sprite);
+        crowdContainer.addChild(Globals.player.sprite);
+    }
+}
+
+function crowdContainerLoop(delta) {
     Globals.player.update();
 
-    updatePlayerCamera();
+    updatePlayerCamera(crowdContainer, Globals.player.sprite);
 
     for (let i = 0; i < Globals.crowd.length; i++) {
         const person = Globals.crowd[i];
@@ -119,21 +185,19 @@ function loop(delta) {
         person.update(delta, i);
     }
 
-    updatePersonsIndex();
+    updatePersonsIndex(crowdContainer, [Globals.player.sprite, ...Globals.crowd.map(x => x.sprite)]);
 }
 
-function updatePersonsIndex() {
-    const sprites: Sprite[] = [Globals.player.sprite, ...Globals.crowd.map(x => x.sprite)];
+function updatePersonsIndex(container: Container, sprites: Sprite[]) {
     sprites
         .sort((x, y) => x.y !== y.y ? (x.y < y.y ? -1 : 1) : 0)
         .forEach((sprite, index) => container.setChildIndex(sprite, index));
 }
 
-function updatePlayerCamera() {
-    const playerSprite = Globals.player.sprite;
+function updatePlayerCamera(container: Container, centerSprite: Sprite) {
     const canvas = document.getElementsByTagName('canvas')[0].getBoundingClientRect();
-    const x = canvas.width / 2 - playerSprite.x - playerSprite.width / 2;
-    const y = canvas.height / 2 - playerSprite.y - playerSprite.height / 2
+    const x = canvas.width / 2 - centerSprite.x - centerSprite.width / 2;
+    const y = canvas.height / 2 - centerSprite.y - centerSprite.height / 2
 
     container.position.x = x;
     container.position.y = y;
