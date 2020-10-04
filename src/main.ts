@@ -1,8 +1,9 @@
 import { Application, Container, Loader, Sprite, Graphics } from 'pixi.js';
 import Person from './person'
-
+import {SpawnManager} from './spawnManager'
 import { Globals } from './globals';
 import { Player } from './player';
+import { SoundEngine } from './soundEngine';
 import { CHARACTER_ASSETS_IDS, getCharacterId, getRandomCharacterSprite } from './assets';
 import { CircleMask } from './circle-mask';
 
@@ -42,6 +43,9 @@ setTimeout(() => {
 }, 3000);
 
 function setup() {
+    Globals.sound = new SoundEngine();
+    Globals.sound.init();
+    
     const mist = new Graphics();
     mist.beginFill(0x4a4a4a);
     mist.drawRect(0, 0, Globals.app.view.width, Globals.app.view.height);
@@ -49,9 +53,12 @@ function setup() {
     mainGameScreen.addChild(mist);
 
     const player = new Player();
-    player.init(0, 0);
-
+    player.init(0, 0); 
+    
     Globals.player = player;
+    
+    const spawnManager = new SpawnManager(); //after player
+    Globals.spawnManager = spawnManager;
 
     generatePersons();
 
@@ -95,7 +102,7 @@ function generatePersons() {
         crowdContainer.addChild(person.sprite);
         if (person.overlaySprite instanceof Sprite) crowdContainer.addChild(person.overlaySprite);
     }
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 6; i++) {
         let person = new Person("stalker");
         person.init(getRandomCharacterSprite(), (Math.random() * 2 - 1) * 1000 + 1000, (Math.random() * 2 - 1) * 1000);
         Globals.crowd.push(person);
@@ -196,8 +203,14 @@ function crowdContainerLoop(delta) {
 
     for (let i = 0; i < Globals.crowd.length; i++) {
         const person = Globals.crowd[i];
-
+        if(person.toBeRecycled){
+            person.sprite.destroy();
+            Globals.crowd.splice(i, 1);
+            i--;
+            continue
+        }
         person.update(delta, i);
+        //Globals.spawnManager.managePerson(person);
     }
 
     updatePersonsIndex(crowdContainer, [Globals.player.sprite, ...Globals.crowd.map(x => x.sprite)]);
@@ -206,7 +219,7 @@ function crowdContainerLoop(delta) {
 function updatePersonsIndex(container: Container, sprites: Sprite[]) {
     sprites
         .sort((x, y) => x.y !== y.y ? (x.y < y.y ? -1 : 1) : 0)
-        .forEach((sprite, index) => container.setChildIndex(sprite, index));
+        .forEach((sprite, index) => crowdContainer.setChildIndex(sprite, index));
 }
 
 function updatePlayerCamera(container: Container, centerSprite: Sprite) {
@@ -214,6 +227,6 @@ function updatePlayerCamera(container: Container, centerSprite: Sprite) {
     const x = canvas.width / 2 - centerSprite.x - centerSprite.width / 2;
     const y = canvas.height / 2 - centerSprite.y - centerSprite.height / 2
 
-    container.position.x = x;
-    container.position.y = y;
+    crowdContainer.position.x = x;
+    crowdContainer.position.y = y;
 }

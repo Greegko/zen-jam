@@ -8,8 +8,8 @@ export class Player {
 
   private spriteTextures = getPlayerSprite();
 
-  private xDirection: number = 0;
-  private yDirection: number = 0;
+  public xDirection: number = 0;
+  public yDirection: number = 0;
   private running: boolean = false;
 
   init(x: number, y: number) {

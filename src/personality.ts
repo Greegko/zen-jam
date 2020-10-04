@@ -100,23 +100,23 @@ export const PERSONALITIES: Record<string, Personality> = {
           moveTowardsTarget: {
             default: true,
             type: "stepAwayFromTarget",
-            options: { running: false, distance: 100 },
+            options: {running: false, distance: 100},
             nextActions: []
           }
         }
       },
     },
     events: {
-      moveAwayWhenPlayerIsClose:
-      {
-        checkFunction: "hasApproached",
-        checkFunctionOptions: { distance: 100, setTriggerAsTarget: true },
-        callbackFunction: "changeBehaviour",
-        callbackFunctionOptions: { behaviour: "moveAwayFromPlayer" },
-        applyOnlyOnPlayer: true
-      }
+      moveAwayWhenPlayerIsClose :
+        {
+          checkFunction: "hasApproached",
+          checkFunctionOptions: {distance: 100, setTriggerAsTarget: true },
+          callbackFunction: "changeBehaviour",
+          callbackFunctionOptions: { behaviour: "moveAwayFromPlayer" },
+          applyOnlyOnPlayer: true
+        }
+      },
     },
-  },
   shy: {
     behaviours: {
       idle: {
@@ -142,133 +142,133 @@ export const PERSONALITIES: Record<string, Personality> = {
           moveTowardsTarget: {
             default: true,
             type: "stepAwayFromTarget",
-            options: { running: false, distance: 400 },
+            options: {running: false, distance: 400},
             nextActions: []
           }
         }
       },
     },
     events: {
-      moveAwayWhenPlayerIsClose:
-      {
-        checkFunction: "hasApproached",
-        checkFunctionOptions: { distance: 400, setTriggerAsTarget: true },
-        callbackFunction: "changeBehaviour",
-        callbackFunctionOptions: { behaviour: "moveAwayFromPlayer" },
-        applyOnlyOnPlayer: true
-      }
+      moveAwayWhenPlayerIsClose :
+        {
+          checkFunction: "hasApproached",
+          checkFunctionOptions: {distance: 400, setTriggerAsTarget: true },
+          callbackFunction: "changeBehaviour",
+          callbackFunctionOptions: { behaviour: "moveAwayFromPlayer" },
+          applyOnlyOnPlayer: true
+        }
+      },
     },
-  },
   calm: {
-    behaviours: {
-      idle: {
-        default: true,
-        possibleEvents: ["moveAwayWhenPlayerIsClose"],
-        actions: {
-          shortWait: {
-            default: true,
-            type: "wait",
-            options: { duration: [60 * 2, 60 * 4] },
-            nextActions: ["longWalk", "shortWalk", "shortWalk"]
-          },
-          shortWalk: {
-            type: "moveTo",
-            options: { running: false, randomDirection: true, distance: [100, 150] },
-            nextActions: ["shortWait", "shortWalk"]
-          },
-          longWalk: {
-            type: "moveTo",
-            options: { running: false, randomDirection: true, distance: [250, 500] },
-            nextActions: ["shortWait"]
-          }
+      behaviours: {
+        idle: {
+          default: true,
+          possibleEvents: ["moveAwayWhenPlayerIsClose"],
+          actions: {
+            shortWait: {
+              default: true,
+              type: "wait",
+              options: { duration: [60 * 2, 60 * 4] },
+              nextActions: ["longWalk", "shortWalk", "shortWalk"]
+            },
+            shortWalk: {
+              type: "moveTo",
+              options: { running: false, randomDirection: true, distance: [100, 150] },
+              nextActions: ["shortWait", "shortWalk"]
+            },
+            longWalk: {
+              type: "moveTo",
+              options: { running: false, randomDirection: true, distance: [250, 500] },
+              nextActions: ["shortWait"]
+            }
 
-        }
-      },
-      moveAwayFromPlayer: {
-        possibleEvents: [],
-        actions: {
-          moveTowardsTarget: {
-            default: true,
-            type: "stepAwayFromTarget",
-            options: { running: false, distance: 40 },
-            nextActions: []
           }
-        }
+        },
+        moveAwayFromPlayer: {
+          possibleEvents: [],
+          actions: {
+            moveTowardsTarget: {
+              default: true,
+              type: "stepAwayFromTarget",
+              options: {running: false, distance: 40},
+              nextActions: []
+            }
+          }
+        },
       },
+      events: {
+        moveAwayWhenPlayerIsClose :
+          {
+            checkFunction: "hasApproached",
+            checkFunctionOptions: {distance: 30, setTriggerAsTarget: true },
+            callbackFunction: "changeBehaviour",
+            callbackFunctionOptions: { behaviour: "moveAwayFromPlayer" },
+            applyOnlyOnPlayer: true
+          }
+        },
     },
-    events: {
-      moveAwayWhenPlayerIsClose:
-      {
-        checkFunction: "hasApproached",
-        checkFunctionOptions: { distance: 30, setTriggerAsTarget: true },
-        callbackFunction: "changeBehaviour",
-        callbackFunctionOptions: { behaviour: "moveAwayFromPlayer" },
-        applyOnlyOnPlayer: true
-      }
-    },
-  },
   stalker: {
-    behaviours: {
-      idle: {
-        default: true,
-        possibleEvents: ["startChaseWhenPlayerIsClose"],
-        actions: {
-          shortWait: {
-            default: true,
-            type: "wait",
-            options: { duration: [60 * 2, 60 * 4] },
-            nextActions: ["longWalk", "shortWalk", "shortWalk"]
-          },
-          shortWalk: {
-            type: "moveTo",
-            options: { running: false, randomDirection: true, distance: [100, 150] },
-            nextActions: ["shortWait", "shortWalk"]
-          },
-          longWalk: {
-            type: "moveTo",
-            options: { rrunning: false, andomDirection: true, distance: [250, 500] },
-            nextActions: ["shortWait"]
+      behaviours: {
+        idle: {
+          default: true,
+          possibleEvents: ["startChaseWhenPlayerIsClose"],
+          actions: {
+            shortWait: {
+              default: true,
+              type: "wait",
+              options: { duration: [60 * 2, 60 * 4] },
+              nextActions: ["longWalk", "shortWalk", "shortWalk"]
+            },
+            shortWalk: {
+              type: "moveTo",
+              options: { running: false, randomDirection: true, distance: [100, 150] },
+              nextActions: ["shortWait", "shortWalk"]
+            },
+            longWalk: {
+              type: "moveTo",
+              options: { rrunning: false, andomDirection: true, distance: [250, 500] },
+              nextActions: ["shortWait"]
+            }
           }
-        }
+        },
+        chasePlayer: {
+          possibleEvents: ["hurtPlayerWhenClose"],
+          actions: {
+            chaseTarget: {
+              default: true,
+              type: "chasePlayer",
+              options: {running: false, duration: [9 * 60]},
+              nextActions: ["rest"]
+            },
+            rest: {
+              default: true,
+              type: "wait",
+              options: { duration: [60 * 10] },
+              nextActions: []
+            },
+          }
+        },
       },
-      chasePlayer: {
-        possibleEvents: ["hurtPlayerWhenClose"],
-        actions: {
-          chaseTarget: {
-            default: true,
-            type: "chasePlayer",
-            options: { running: false, duration: [6 * 60] },
-            nextActions: ["rest"]
+      events: {
+        startChaseWhenPlayerIsClose :
+          {
+            checkFunction: "hasApproached",
+            checkFunctionOptions: {distance: 400, setTriggerAsTarget: true },
+            callbackFunction: "changeBehaviour",
+            callbackFunctionOptions: { behaviour: "chasePlayer", playSound: "activateStalkerChase" },
+            applyOnlyOnPlayer: true
           },
-          rest: {
-            default: true,
-            type: "wait",
-            options: { duration: [60 * 10] },
-            nextActions: []
-          },
-        }
-      },
+          hurtPlayerWhenClose:
+          {
+            checkFunction: "hasApproached",
+            checkFunctionOptions: {distance: 10, setTriggerAsTarget: false },
+            callbackFunction: "hurtPlayerAndDeactivate",
+            callbackFunctionOptions: {},
+            applyOnlyOnPlayer: true
+          } 
+        },
+          
     },
-    events: {
-      startChaseWhenPlayerIsClose:
-      {
-        checkFunction: "hasApproached",
-        checkFunctionOptions: { distance: 400, setTriggerAsTarget: true },
-        callbackFunction: "changeBehaviour",
-        callbackFunctionOptions: { behaviour: "chasePlayer" },
-        applyOnlyOnPlayer: true
-      },
-      hurtPlayerWhenClose:
-      {
-        checkFunction: "hasApproached",
-        checkFunctionOptions: { distance: 10, setTriggerAsTarget: false },
-        callbackFunction: "hurtPlayerAndDeactivate",
-        callbackFunctionOptions: {},
-        applyOnlyOnPlayer: true
-      }
-    },
-
-  },
   rager: {
     behaviours: {
       run: {
@@ -293,24 +293,24 @@ export const PERSONALITIES: Record<string, Personality> = {
           },
         }
       },
-
+      
     },
     events: {
       hurtPlayerWhenClose:
-      {
-        checkFunction: "hasApproached",
-        checkFunctionOptions: { distance: 30, setTriggerAsTarget: false },
-        callbackFunction: "hurtPlayerAndDeactivate",
-        callbackFunctionOptions: {},
-        applyOnlyOnPlayer: true
-      }
-    },
+          {
+            checkFunction: "hasApproached",
+            checkFunctionOptions: {distance: 30, setTriggerAsTarget: false },
+            callbackFunction: "hurtPlayerAndDeactivate",
+            callbackFunctionOptions: {},
+            applyOnlyOnPlayer: true
+          } 
+    },   
   },
   snapper: {
     behaviours: {
       standStill: {
         default: true,
-        possibleEvents: ["snapAtPlayer"],
+        possibleEvents: ["snapAtPlayer", "audioPresence"],
         actions: {
           justWait: {
             default: true,
@@ -327,7 +327,7 @@ export const PERSONALITIES: Record<string, Personality> = {
           chaseTarget: {
             default: true,
             type: "chasePlayer",
-            options: { running: true, duration: [3 * 60] },
+            options: {running: true, duration: [1 * 60]},
             nextActions: ["rest"]
           },
           rest: {
@@ -340,24 +340,32 @@ export const PERSONALITIES: Record<string, Personality> = {
       },
     },
     events: {
-      snapAtPlayer:
-      {
-        checkFunction: "hasApproached",
-        checkFunctionOptions: { distance: 150, setTriggerAsTarget: true },
-        callbackFunction: "changeBehaviour",
-        callbackFunctionOptions: { behaviour: "chasePlayer" },
-        applyOnlyOnPlayer: true
-      },
+      audioPresence :
+        {
+          checkFunction: "hasApproached",
+          checkFunctionOptions: {distance: 300, setTriggerAsTarget: true },
+          callbackFunction: "activateSound",
+          callbackFunctionOptions: {sound: "activateSnapperPresence" },
+          applyOnlyOnPlayer: true
+        },
+      snapAtPlayer :
+        {
+          checkFunction: "hasApproached",
+          checkFunctionOptions: {distance: 150, setTriggerAsTarget: true },
+          callbackFunction: "changeBehaviour",
+          callbackFunctionOptions: { behaviour: "chasePlayer", playSound: "playSnapperStart" },
+          applyOnlyOnPlayer: true
+        },
       hurtPlayerWhenClose:
-      {
-        checkFunction: "hasApproached",
-        checkFunctionOptions: { distance: 5, setTriggerAsTarget: false },
-        callbackFunction: "hurtPlayerAndDeactivate",
-        callbackFunctionOptions: {},
-        applyOnlyOnPlayer: true
-      }
+        {
+          checkFunction: "hasApproached",
+          checkFunctionOptions: {distance: 5, setTriggerAsTarget: false },
+          callbackFunction: "hurtPlayerAndDeactivate",
+          callbackFunctionOptions: {},
+          applyOnlyOnPlayer: true
+        } 
+      },
     },
-  },
   friend: {
     behaviours: {
       idle: {
@@ -377,7 +385,7 @@ export const PERSONALITIES: Record<string, Personality> = {
           },
           shortWalk: {
             type: "moveTo",
-            options: { running: false, randomDirection: true, distance: [100] },
+            options: { running: false, randomDirection: true, distance: [100]},
             nextActions: ["smallWait", "shortWalk"]
           }
         }
@@ -395,51 +403,51 @@ export const PERSONALITIES: Record<string, Personality> = {
       },
     },
     events: {
-      followPlayerWhenClose:
-      {
-        checkFunction: "hasApproached",
-        checkFunctionOptions: { distance: 40, setTriggerAsTarget: true },
-        callbackFunction: "changeBehaviour",
-        callbackFunctionOptions: { behaviour: "followPlayer" },
-        applyOnlyOnPlayer: true
-      }
-    },
-  },
-  limboFriend: {
-    behaviours: {
-      idle: {
-        default: true,
-        possibleEvents: ["followPlayerWhenClose"],
-        actions: {
-          smallWait: {
-            default: true,
-            type: "wait",
-            options: { duration: [60 * 2] },
-            nextActions: []
-          }
-        }
-      },
-      followPlayer: {
-        possibleEvents: [],
-        actions: {
-          followPlayer: {
-            default: true,
-            type: "followPlayer",
-            options: {},
-            nextActions: []
-          }
+      followPlayerWhenClose :
+        {
+          checkFunction: "hasApproached",
+          checkFunctionOptions: { distance: 40, setTriggerAsTarget: true },
+          callbackFunction: "changeBehaviour",
+          callbackFunctionOptions: { behaviour: "followPlayer" },
+          applyOnlyOnPlayer: true
         }
       },
     },
-    events: {
-      followPlayerWhenClose:
-      {
-        checkFunction: "hasApproached",
-        checkFunctionOptions: { distance: 40, setTriggerAsTarget: true },
-        callbackFunction: "exitLimbo",
-        callbackFunctionOptions: {},
-        applyOnlyOnPlayer: true
-      }
-    },
-  }
+    limboFriend: {
+      behaviours: {
+        idle: {
+          default: true,
+          possibleEvents: ["followPlayerWhenClose"],
+          actions: {
+            smallWait: {
+              default: true,
+              type: "wait",
+              options: { duration: [60 * 2] },
+              nextActions: []
+            }
+          }
+        },
+        followPlayer: {
+          possibleEvents: [],
+          actions: {
+            followPlayer: {
+              default: true,
+              type: "followPlayer",
+              options: {},
+              nextActions: []
+            }
+          }
+        },
+      },
+      events: {
+        followPlayerWhenClose:
+        {
+          checkFunction: "hasApproached",
+          checkFunctionOptions: { distance: 40, setTriggerAsTarget: true },
+          callbackFunction: "exitLimbo",
+          callbackFunctionOptions: {},
+          applyOnlyOnPlayer: true
+        }
+      },
+    }
 };
