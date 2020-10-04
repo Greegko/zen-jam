@@ -219,7 +219,7 @@ function crowdContainerLoop(delta) {
 function updatePersonsIndex(container: Container, sprites: Sprite[]) {
     sprites
         .sort((x, y) => x.y !== y.y ? (x.y < y.y ? -1 : 1) : 0)
-        .forEach((sprite, index) => crowdContainer.setChildIndex(sprite, index));
+        .forEach((sprite, index) => container.setChildIndex(sprite, index));
 }
 
 function updatePlayerCamera(container: Container, centerSprite: Sprite) {
@@ -227,6 +227,6 @@ function updatePlayerCamera(container: Container, centerSprite: Sprite) {
     const x = canvas.width / 2 - centerSprite.x - centerSprite.width / 2;
     const y = canvas.height / 2 - centerSprite.y - centerSprite.height / 2
 
-    crowdContainer.position.x = x;
-    crowdContainer.position.y = y;
+    container.position.x = x;
+    container.position.y = y;
 }
