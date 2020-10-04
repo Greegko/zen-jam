@@ -19,6 +19,7 @@ class Person {
   private movemetPointTargetSensibility: number;
 
   private active: boolean;
+  public toBeRecycled: boolean;
   private moving: boolean;
   private running: boolean;
   private movementDirection: number[];
@@ -27,7 +28,7 @@ class Person {
   private targetPerson: any;
   private emoteRgbTint: number[];
   private emoteMidPoint: number;
-  private personality: string;
+  public personality: string;
   private currentBehaviour: Behaviour;
   private currentAction: Action;
 
@@ -74,6 +75,8 @@ class Person {
     this.movemetPointTargetSensibility = 20;
 
     this.active = true;
+    this.toBeRecycled = false;
+
     this.moving = false;
     this.running = false;
     this.movementDirection = [-1, 0];
@@ -291,12 +294,20 @@ class Person {
         this.currentBehaviour = PERSONALITIES[this.personality].behaviours[args.behaviour];
         this.currentAction = this.getDefaultAction(this.currentBehaviour);
         this.actions[this.currentAction.type].setup(this.currentAction.options);
+
+        if(args.playSound){
+          console.log(args.playSound);
+          Globals.sound[args.playSound]();
+        }
       },
       hurtPlayerAndDeactivate: (args) => {
         this.active = false;
         this.moving = false;
         Globals.triggerLimbo();
       },
+      activateSound: (args) => {
+        Globals.sound[args.sound]();
+      }
     }
 
     //Launch first action
