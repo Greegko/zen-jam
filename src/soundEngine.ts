@@ -18,11 +18,12 @@ private sounds: any;
         new Howl({src:["./assets/sounds/Snaper5.mp3"]}),
       ],
       snapperPresence: new Howl({src:["./assets/sounds/around_snapper.mp3"], volume: 1}),
-      stalkerChase: new Howl({src:["./assets/sounds/stalker_chase.mp3"], volume: 1})
+      stalkerChase: new Howl({src:["./assets/sounds/stalker_chase.mp3"], volume: 1}),
+      ambient: new Howl({src:["./assets/sounds/ambient.mp3"], volume: 0.5, loop: true})
     }
-    // this.playSnapperStart();
+     this.sounds.ambient.play();
   }
-
+  
   playSnapperStart() {
     let s = Tools.randomFromList(this.sounds.snapper_start);
     
