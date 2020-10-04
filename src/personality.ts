@@ -232,7 +232,7 @@ export const PERSONALITIES: Record<string, Personality> = {
           }
         },
         chasePlayer: {
-          possibleEvents: [],
+          possibleEvents: ["hurtPlayerWhenClose"],
           actions: {
             chaseTarget: {
               default: true,
@@ -257,14 +257,23 @@ export const PERSONALITIES: Record<string, Personality> = {
             callbackFunction: "changeBehaviour",
             callbackFunctionOptions: { behaviour: "chasePlayer" },
             applyOnlyOnPlayer: true
-          }
-        },   
+          },
+          hurtPlayerWhenClose:
+          {
+            checkFunction: "hasApproached",
+            checkFunctionOptions: {distance: 10, setTriggerAsTarget: false },
+            callbackFunction: "hurtPlayerAndDeactivate",
+            callbackFunctionOptions: {},
+            applyOnlyOnPlayer: true
+          } 
+        },
+          
     },
   rager: {
     behaviours: {
       run: {
         default: true,
-        possibleEvents: [],
+        possibleEvents: ["hurtPlayerWhenClose"],
         actions: {
           runShort: {
             default: true,
@@ -286,7 +295,16 @@ export const PERSONALITIES: Record<string, Personality> = {
       },
       
     },
-    events: {},   
+    events: {
+      hurtPlayerWhenClose:
+          {
+            checkFunction: "hasApproached",
+            checkFunctionOptions: {distance: 30, setTriggerAsTarget: false },
+            callbackFunction: "hurtPlayerAndDeactivate",
+            callbackFunctionOptions: {},
+            applyOnlyOnPlayer: true
+          } 
+    },   
   },
   snapper: {
     behaviours: {
@@ -304,7 +322,7 @@ export const PERSONALITIES: Record<string, Personality> = {
         }
       },
       chasePlayer: {
-        possibleEvents: [],
+        possibleEvents: ["hurtPlayerWhenClose"],
         actions: {
           chaseTarget: {
             default: true,
@@ -325,11 +343,19 @@ export const PERSONALITIES: Record<string, Personality> = {
       snapAtPlayer :
         {
           checkFunction: "hasApproached",
-          checkFunctionOptions: {distance: 200, setTriggerAsTarget: true },
+          checkFunctionOptions: {distance: 150, setTriggerAsTarget: true },
           callbackFunction: "changeBehaviour",
           callbackFunctionOptions: { behaviour: "chasePlayer" },
           applyOnlyOnPlayer: true
-        }
+        },
+      hurtPlayerWhenClose:
+        {
+          checkFunction: "hasApproached",
+          checkFunctionOptions: {distance: 5, setTriggerAsTarget: false },
+          callbackFunction: "hurtPlayerAndDeactivate",
+          callbackFunctionOptions: {},
+          applyOnlyOnPlayer: true
+        } 
       },
     },
   friend: {
@@ -341,12 +367,17 @@ export const PERSONALITIES: Record<string, Personality> = {
           smallWait: {
             default: true,
             type: "wait",
-            options: { duration: 60 * 2 },
-            nextActions: ["shortWalk", "smallWait"]
+            options: { duration: [60 * 2] },
+            nextActions: ["shortWalk", "smallWait", "emotePositive"]
+          },
+          emotePositive: {
+            type: "emote",
+            options: { duration: [60 * 2], rgbTint: [255, 255, 255] },
+            nextActions: ["smallWait"]
           },
           shortWalk: {
             type: "moveTo",
-            options: { random: true, radius: 100 },
+            options: { running: false, randomDirection: true, distance: [100]},
             nextActions: ["smallWait", "shortWalk"]
           }
         }

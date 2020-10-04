@@ -21,14 +21,15 @@ export const getRandomCharacterSprite = () => {
 
 export const CHARACTER_ASSETS_IDS = {
   'AngstyHank': ['B', 'F', 'L', 'R'],
-  'EmptySteve': ['01', '02', '03'],
+  // 'EmptySteve': ['01', '02', '03'],
   'ManlyMan': ['01', '02', '03', 'smile'],
-  'ShoppingJanine': ['01', '02', '03'],
-  'SkatingSam': ['01', '02', '03'],
-  'FranticFrancine': ['01', '02', '03'],
+  // 'ShoppingJanine': ['01', '02', '03'],
+  // 'SkatingSam': ['01', '02', '03'],
+  // 'FranticFrancine': ['01', '02', '03'],
 }
 
-export const CHARACTERS = ['EmptySteve', 'ManlyMan', 'ShoppingJanine', 'SkatingSam', 'FranticFrancine'] as const;
+// export const CHARACTERS = ['EmptySteve', 'ManlyMan', 'ShoppingJanine', 'SkatingSam', 'FranticFrancine'] as const;
+export const CHARACTERS = ['ManlyMan'] as const;
 
 export const getCharacterId = (character: string, id: string) => {
   return PEOPLE_ASSET_PATH + '/' + character + '_' + id + '.png';

@@ -1,4 +1,4 @@
-import { Sprite } from 'pixi.js';
+import { Sprite, utils, Texture } from 'pixi.js';
 import { Action, Behaviour, PERSONALITIES, Personality } from './personality';
 import Tools from "./tools";
 import { WALKING_SPEED, RUNNING_SPEED, Globals } from './globals';
@@ -10,16 +10,23 @@ interface PersonAction {
 
 class Person {
   public sprite: Sprite;
+  public overlaySprite: Sprite;
+
+  private baseRgbTint: number[];
   private maxVelocityWalk: number;
   private maxVelocityRun: number;
   private accelleration: number;
   private movemetPointTargetSensibility: number;
 
+  private active: boolean;
   private moving: boolean;
   private running: boolean;
   private movementDirection: number[];
   private movemetPointTarget: number[];
+  private movemetOffset: number[];
   private targetPerson: any;
+  private emoteRgbTint: number[];
+  private emoteMidPoint: number;
   private personality: string;
   private currentBehaviour: Behaviour;
   private currentAction: Action;
@@ -34,6 +41,7 @@ class Person {
 
   constructor(_personality: string){
     this.personality = _personality;
+    
   }
 
   init(sprite: Sprite, x: number, y: number) {
@@ -42,12 +50,30 @@ class Person {
     this.sprite.x = x;
     this.sprite.y = y;
 
+    if(this.personality == "allabu"){
+      this.overlaySprite = new Sprite();
+      this.overlaySprite.x = x;
+      this.overlaySprite.y = y;
+      this.overlaySprite.texture = Texture.from("./assets/sprites/people/ManlyMan_smile.png");
+    }
+
+    let tintValue = (Math.random()*70 + 70);
+    if(this.personality == "snapper") tintValue = 40;
+    this.baseRgbTint = [tintValue, tintValue, tintValue];
+    this.sprite.tint = utils.rgb2hex([
+      tintValue/255,
+      tintValue/255,
+      tintValue/255
+    ]);
+    
+
     this.maxVelocityWalk = WALKING_SPEED;
     this.maxVelocityRun = RUNNING_SPEED;
 
-    this.accelleration = 0.5;
+    this.accelleration = 0.2;
     this.movemetPointTargetSensibility = 20;
 
+    this.active = true;
     this.moving = false;
     this.running = false;
     this.movementDirection = [-1, 0];
@@ -65,6 +91,7 @@ class Person {
         setup: (args) => {
           if(args.duration.length > 1) this.exitActionTimer = Tools.randomFromRange(args.duration[0], args.duration[1]);
           this.exitActionTimer = args.duration[0];
+
           
         },
         update: () => {
@@ -117,12 +144,57 @@ class Person {
           }
         }
       },
+      emote: {
+        setup: (args) => {
+          if(args.duration.length > 1) this.exitActionTimer = Tools.randomFromRange(args.duration[0], args.duration[1]);
+          this.exitActionTimer = args.duration[0];
+
+          this.emoteMidPoint = this.exitActionTimer / 2;
+          this.emoteRgbTint = args.rgbTint.slice();
+
+         },
+        update: () => {
+          this.exitActionTimer--;
+
+          let timeDistance = Math.abs(this.emoteMidPoint - this.exitActionTimer);
+          timeDistance /= this.emoteMidPoint;
+          timeDistance = 1 - timeDistance;
+
+          let newTint = [
+            Tools.lerp(this.baseRgbTint[0], this.emoteRgbTint[0], timeDistance)/255,
+            Tools.lerp(this.baseRgbTint[1], this.emoteRgbTint[1], timeDistance)/255,
+            Tools.lerp(this.baseRgbTint[2], this.emoteRgbTint[2], timeDistance)/255,
+          ];
+
+          this.sprite.tint = utils.rgb2hex(newTint);
+
+          if (this.exitActionTimer <= 0) {
+            this.changeAction();
+          }
+        },
+      },
       followPlayer: {
-        setup: (args) => { },
+        setup: (args) => {
+
+          this.movemetOffset = [
+            Tools.randomFromRange(30, 80) * (Math.random() > 0.5? 1 : -1),
+            Tools.randomFromRange(30, 80) * (Math.random() > 0.5? 1 : -1)
+          ];
+
+          this.baseRgbTint = [220, 220, 200];
+
+          let newTint = [
+            this.baseRgbTint[0]/255,
+            this.baseRgbTint[1]/255,
+            this.baseRgbTint[2]/255,
+          ];
+          this.sprite.tint = utils.rgb2hex(newTint);
+
+         },
         update: () => {
           this.moving = true;
-          const xLength = Globals.player.sprite.x - this.sprite.x;
-          const yLength = Globals.player.sprite.y - this.sprite.y;
+          const xLength = (Globals.player.sprite.x+this.movemetOffset[0]) - this.sprite.x;
+          const yLength = (Globals.player.sprite.y+this.movemetOffset[1]) - this.sprite.y;
           const x = xLength - xLength * .98;
           const y = yLength - yLength * .98;
           this.movementDirection = [x, y];
@@ -151,7 +223,6 @@ class Person {
           this.movementDirection = dir.slice();
 
           this.exitActionTimer--
-          console.log(this.exitActionTimer);
           
           if (this.exitActionTimer <= 0) {
             this.moving = false;
@@ -205,7 +276,6 @@ class Person {
         let posB = [target.sprite.x, target.sprite.y];
         let dist = Tools.distanceBetweenTwoPoints(posA, posB);
         if (dist < args.distance) {
-          console.log("TOUCHED!!!");
           if (args.setTriggerAsTarget) this.targetPerson = target;
           return true;
         }
@@ -217,9 +287,13 @@ class Person {
         this.currentBehaviour = PERSONALITIES[this.personality].behaviours[args.behaviour];
         this.currentAction = this.getDefaultAction(this.currentBehaviour);
         this.actions[this.currentAction.type].setup(this.currentAction.options);
-
-
-      }
+      },
+      hurtPlayerAndDeactivate: (args) => {
+        console.log("PLAYER IS HIT !!!");
+        alert("you got hurt");
+        this.active = false;
+        this.moving = false;
+      },
     }
 
     //Launch first action
@@ -227,10 +301,11 @@ class Person {
   }
 
   update(delta, my_index) {
-    this.applyMovement();
-    this.checkForEvents(my_index);
-    this.actions[this.currentAction.type].update();
-    //this.tickBehaviour(delta)
+    if(this.active){
+      this.applyMovement();
+      this.checkForEvents(my_index);
+      this.actions[this.currentAction.type].update();
+    }    
   }
 
   checkForEvents(my_index) {
@@ -265,10 +340,6 @@ class Person {
 
 
     }
-
-  }
-
-  collade() {
 
   }
 
@@ -323,8 +394,18 @@ class Person {
     }
 
     //apply the movement direction o the two axes
-    this.sprite.x += this.movementDirection[0] * this.currentVelocity;
-    this.sprite.y += this.movementDirection[1] * this.currentVelocity;
+    
+    let stepX = this.movementDirection[0] * this.currentVelocity;
+    let stepY = this.movementDirection[1] * this.currentVelocity;
+
+    this.sprite.x += stepX;
+    this.sprite.y += stepY;
+
+    if(this.overlaySprite){
+      this.overlaySprite.x += stepX;
+      this.overlaySprite.y += stepY;
+    }
+    
   }
 
 }
