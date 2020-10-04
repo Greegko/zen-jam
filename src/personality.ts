@@ -372,7 +372,7 @@ export const PERSONALITIES: Record<string, Personality> = {
           },
           emotePositive: {
             type: "emote",
-            options: { duration: [60 * 2], rgbTint: [255, 255, 255] },
+            options: { duration: [60 * 2], rgbTint: [235, 235, 255] },
             nextActions: ["smallWait"]
           },
           shortWalk: {

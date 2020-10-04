@@ -181,7 +181,7 @@ class Person {
             Tools.randomFromRange(30, 80) * (Math.random() > 0.5? 1 : -1)
           ];
 
-          this.baseRgbTint = [220, 220, 200];
+          this.baseRgbTint = [224, 224, 240];
 
           let newTint = [
             this.baseRgbTint[0]/255,
