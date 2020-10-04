@@ -47,7 +47,24 @@ function setup() {
 
     Globals.player = player;
 
+    generatePersons();
 
+    crowdContainer.addChild(player.sprite);
+    mainGameScreen.addChild(crowdContainer);
+
+    let vignette = Sprite.from('./assets/sprites/FXs/vignette_and_dust.png');
+    vignette.x = 0;
+    vignette.y = 0;
+    vignette.zIndex = -10000;
+    vignette.width = Globals.app.screen.width;
+    vignette.height = Globals.app.screen.height;
+    mainGameScreen.addChild(vignette);
+
+    Globals.app.ticker.add(crowdContainerLoop);
+    Globals.app.stage.addChild(mainGameScreen);
+}
+
+function generatePersons() {
     for (let i = 0; i < 100; i++) {
         let person = new Person("lazy");
         person.init(getRandomCharacterSprite(), (Math.random() * 2 - 1) * 1000 + 1000, (Math.random() * 2 - 1) * 1000);
@@ -104,20 +121,6 @@ function setup() {
         crowdContainer.addChild(person.sprite);
         if (person.overlaySprite instanceof Sprite) crowdContainer.addChild(person.overlaySprite);
     }
-
-    crowdContainer.addChild(player.sprite);
-    mainGameScreen.addChild(crowdContainer);
-
-    let vignette = Sprite.from('./assets/sprites/FXs/vignette_and_dust.png');
-    vignette.x = 0;
-    vignette.y = 0;
-    vignette.zIndex = -10000;
-    vignette.width = Globals.app.screen.width;
-    vignette.height = Globals.app.screen.height;
-    mainGameScreen.addChild(vignette);
-
-    Globals.app.ticker.add(crowdContainerLoop);
-    Globals.app.stage.addChild(mainGameScreen);
 }
 
 let limboResolver: Function = null;
@@ -134,6 +137,7 @@ function exitLimbo() {
     Globals.crowd = [];
 
     limboResolver();
+    generatePersons();
     circleMask.revert(() => {
         Globals.app.ticker.add(crowdContainerLoop);
     });
@@ -143,10 +147,13 @@ function startLimbo() {
     const limboScreen = new Container();
     const goodFellow = new Person('limboFriend');
 
+    const maxWidth = Globals.app.screen.width;
+    const maxHeight = Globals.app.screen.height;
+
     goodFellow.init(
         getRandomCharacterSprite(),
-        Math.floor(Math.random() * Globals.app.screen.width) - Globals.app.screen.width / 2,
-        Math.floor(Math.random() * Globals.app.screen.height) - Globals.app.screen.height / 2
+        Globals.player.sprite.x + Math.floor(Math.random() * maxWidth) - maxWidth / 2,
+        Globals.player.sprite.y + Math.floor(Math.random() * maxHeight) - maxHeight / 2
     );
 
     limboScreen.addChild(Globals.player.sprite);
